@@ -9,11 +9,11 @@
 <meta name="theme-color" content="#0f1117">
 <title>Box Scanner</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap');
   :root {
     --bg:#0f1117; --surface:#1a1d27; --card:#22263a;
     --accent:#00e5ff; --accent-h:#40eeff;
-    --green:#4caf82; --red:#e05c5c; --purple:#b388ff;
+    --green:#4caf82; --red:#e05c5c;
     --text:#e8eaf6; --muted:#7b7f9e; --border:#2e3250;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -22,25 +22,22 @@
 
   /* HEADER */
   header{background:var(--surface);border-bottom:2px solid var(--border);padding:8px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:8px;}
-
   .h-refresh{width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1.5px solid var(--border);border-radius:50%;cursor:pointer;flex-shrink:0;}
   .h-refresh:active{border-color:var(--accent);}
   .h-refresh svg{width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
-
   #pid-display{flex:1;justify-content:center;display:none;}
   .pid-box{background:var(--card);border:1.5px solid rgba(0,229,255,.45);border-radius:10px;padding:5px 16px;text-align:center;box-shadow:0 0 14px rgba(0,229,255,.15);}
   .pid-label{font-size:.48rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:1px;}
   .pid-val{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:5px;color:var(--accent);text-shadow:0 0 12px rgba(0,229,255,.5);line-height:1;}
-
-  .h-controls{display:flex;gap:6px;align-items:center;flex-shrink:0;}
-  .h-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;}
-  .h-btn:active{border-color:var(--accent);}
-  .h-btn svg{width:15px;height:15px;stroke:var(--muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  /* Single toggle button top right */
+  .h-win-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;flex-shrink:0;}
+  .h-win-btn:active{border-color:var(--accent);}
+  .h-win-btn svg{width:15px;height:15px;stroke:var(--muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 
   /* MAIN */
   .main{flex:1;overflow-y:auto;padding:12px 14px 20px;display:flex;flex-direction:column;gap:12px;}
 
-  /* SCANNER CARD */
+  /* SCANNER */
   .scan-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;overflow:hidden;}
   .scan-ready{background:var(--card);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:18px 20px;user-select:none;transition:background .15s;min-height:110px;}
   .scan-ready:active{background:#1e2235;}
@@ -69,7 +66,6 @@
   .scan-line{position:absolute;left:2%;right:2%;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:scan-line 1.8s ease-in-out infinite;}
   @keyframes aim-pulse{0%,100%{border-color:var(--accent);box-shadow:0 0 0 1200px rgba(0,0,0,.5),0 0 12px rgba(0,229,255,.3);}50%{border-color:var(--accent-h);box-shadow:0 0 0 1200px rgba(0,0,0,.5),0 0 22px rgba(0,229,255,.6);}}
   @keyframes scan-line{0%{top:15%;opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{top:85%;opacity:0;}}
-
   .scan-footer{padding:5px 14px 7px;text-align:center;}
   .scan-status{font-size:.62rem;color:var(--muted);letter-spacing:.5px;}
   .scan-status.active{color:var(--accent);}
@@ -86,13 +82,17 @@
   .field-ai{font-family:'Bebas Neue',sans-serif;font-size:.58rem;letter-spacing:.8px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:2px 7px;white-space:nowrap;flex-shrink:0;min-width:62px;text-align:center;}
   .field-info{flex:1;min-width:0;}
   .field-label{font-size:.56rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);line-height:1;}
-  .field-value{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:1.5px;color:var(--accent);line-height:1.2;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .field-value.empty{color:var(--border);font-size:.7rem;font-family:'DM Sans',sans-serif;letter-spacing:.5px;}
+  /* Human-readable font, white */
+  .field-value{font-family:'DM Sans',sans-serif;font-weight:600;font-size:.95rem;color:#fff;line-height:1.3;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .field-value.empty{color:var(--border);font-weight:400;font-size:.8rem;}
+  .gtin-pid{color:var(--accent);text-shadow:0 0 8px rgba(0,229,255,.5);}
 
-  .inspect-row{border-color:rgba(0,229,255,.35)!important;background:rgba(0,229,255,.06)!important;}
-  .inspect-row .field-ai{border-color:rgba(0,229,255,.35)!important;color:var(--accent)!important;}
-
-  .extra-label{font-size:.52rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);padding:2px 2px 4px;opacity:.7;}
+  /* PAGE NAV bubble — only shows when extras exist */
+  .page-nav{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--card);border-radius:10px;border:1px solid var(--border);}
+  .page-nav-info{flex:1;text-align:center;font-size:.6rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);}
+  .nav-btn{flex:1;padding:8px 0;font-family:'Bebas Neue',sans-serif;font-size:.85rem;letter-spacing:2px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;text-align:center;transition:all .15s;}
+  .nav-btn.active{border-color:var(--accent);color:var(--accent);}
+  .nav-btn.disabled{opacity:.3;cursor:not-allowed;}
 
   /* CONFIRM */
   .confirm-btn{width:100%;padding:16px;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:3px;border-radius:12px;border:none;background:var(--accent);color:#000;cursor:pointer;transition:all .2s;flex-shrink:0;}
@@ -118,13 +118,12 @@
     </div>
   </div>
 
-  <div class="h-controls">
-    <div class="h-btn" id="fs-btn" onclick="toggleFullscreen()">
-      <svg id="fs-icon" viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-    </div>
-    <div class="h-btn" onclick="minimizeApp()">
-      <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    </div>
+  <!-- Single toggle: expand → compress, same button -->
+  <div class="h-win-btn" id="win-btn" onclick="toggleFullscreen()">
+    <svg id="win-icon" viewBox="0 0 24 24">
+      <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+      <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+    </svg>
   </div>
 </header>
 
@@ -162,15 +161,7 @@
   </div>
 
   <div class="results-card" id="results-card">
-    <div class="results-grid">
-
-      <div class="field-row" id="row-from" style="display:none;">
-        <div class="field-ai">From</div>
-        <div class="field-info">
-          <div class="field-label">From</div>
-          <div class="field-value" id="val-from">—</div>
-        </div>
-      </div>
+    <div class="results-grid" id="results-grid">
 
       <div class="field-row" id="row-gtin">
         <div class="field-ai">GTIN</div>
@@ -204,16 +195,24 @@
         </div>
       </div>
 
-      <div class="field-row inspect-row" id="row-inspect">
-        <div class="field-ai" style="border-color:rgba(0,229,255,.35);color:var(--accent);">Inspect ID</div>
+      <div class="field-row" id="row-inspect">
+        <div class="field-ai">Inspect ID</div>
         <div class="field-info">
           <div class="field-label">Inspection ID</div>
-          <div class="field-value empty" id="val-inspect" style="cursor:pointer;" onclick="editInspect()">—</div>
+          <div class="field-value" id="val-inspect" style="cursor:pointer;" onclick="editInspect()">P-47016</div>
         </div>
         <div style="font-size:.6rem;color:var(--muted);padding-left:4px;cursor:pointer;" onclick="editInspect()">✏</div>
       </div>
 
-      <div id="extra-fields"></div>
+      <!-- Extra field pages — injected by JS -->
+      <div id="extra-page-fields"></div>
+
+      <!-- Page nav — only shown when extras exist -->
+      <div class="page-nav" id="page-nav" style="display:none;">
+        <div class="nav-btn" id="nav-back" onclick="navPage(-1)">◀ BACK</div>
+        <div class="page-nav-info" id="nav-info">PAGE 1</div>
+        <div class="nav-btn" id="nav-next" onclick="navPage(1)">NEXT ▶</div>
+      </div>
 
     </div>
   </div>
@@ -226,6 +225,7 @@
 
 <script>
 let scanning = false, codeReader = null, scanData = null, animFrame = null;
+let extraPages = [], currentPage = 0; // page 0 = primary fields (no extra shown)
 
 /* ===== GS1 CATALOGUE ===== */
 const GS1_AI = {
@@ -261,8 +261,8 @@ const GS1_AI = {
   '91':  {badge:'Cust 91',   name:'Company Internal (91)',      len:30, fixed:false},
   '92':  {badge:'Cust 92',   name:'Company Internal (92)',      len:30, fixed:false},
 };
-
 const PRIMARY_AIS = new Set(['01','13','3202','21']);
+const EXTRAS_PER_PAGE = 4;
 
 /* ===== PARSER ===== */
 function parseGS1(raw) {
@@ -286,8 +286,7 @@ function parseGS1(raw) {
         result[ai] = end === -1 ? data.substr(i) : data.substr(i, end - i);
         i = end === -1 ? data.length : end;
       }
-      matched = true;
-      break;
+      matched = true; break;
     }
     if (!matched) i++;
   }
@@ -300,9 +299,7 @@ function formatDate(s) {
   const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   return `${mo[parseInt(s.substr(2,2),10)-1]||s.substr(2,2)} ${s.substr(4,2)}, 20${s.substr(0,2)}`;
 }
-function formatW2(s) {
-  return s ? (parseInt(s,10)/100).toFixed(2)+' lbs' : s;
-}
+function formatW2(s) { return s ? (parseInt(s,10)/100).toFixed(2)+' lbs' : s; }
 function applyFmt(v, fmt) {
   if (fmt==='date') return formatDate(v);
   if (fmt==='w2')   return formatW2(v);
@@ -314,35 +311,22 @@ function extractPID(gtin) {
 function gtinHTML(gtin) {
   if (!gtin || gtin.length < 14) return gtin||'';
   return gtin.substr(0,8)
-    + `<span style="color:var(--accent);text-shadow:0 0 8px rgba(0,229,255,.6);">${gtin.substr(8,5)}</span>`
+    + `<span class="gtin-pid">${gtin.substr(8,5)}</span>`
     + gtin.substr(13);
 }
 
 /* ===== DISPLAY ===== */
 function displayData(parsed, raw) {
   scanData = {parsed, raw};
-
   const gtin = parsed['01']||'', date = parsed['13']||'',
         wt   = parsed['3202']||'', ser = parsed['21']||'';
-  const pid  = extractPID(gtin);
+  const pid = extractPID(gtin);
 
-  // Product ID header — always clear first, then set if exists
+  // Header Product ID — always clear first
   const pidDisp = document.getElementById('pid-display');
   const pidVal  = document.getElementById('pid-value');
-  pidDisp.style.display = 'none';
-  pidVal.textContent = '';
-  if (pid) {
-    pidVal.textContent = pid;
-    pidDisp.style.display = 'flex';
-  }
-
-  // From field
-  const fromRow = document.getElementById('row-from');
-  const fromVal = document.getElementById('val-from');
-  fromRow.style.display = 'flex';
-  fromRow.classList.add('filled');
-  fromVal.textContent = 'The Best Dressed Chicken';
-  fromVal.classList.remove('empty');
+  pidDisp.style.display = 'none'; pidVal.textContent = '';
+  if (pid) { pidVal.textContent = pid; pidDisp.style.display = 'flex'; }
 
   // GTIN with highlighted PID digits
   const gtinEl = document.getElementById('val-gtin');
@@ -359,14 +343,14 @@ function displayData(parsed, raw) {
   setField('val-weight', 'row-weight', wt,   formatW2);
   setField('val-serial', 'row-serial', ser);
 
-  // Inspection ID — show active style once scan happens
-  const inspEl = document.getElementById('val-inspect');
-  if (inspEl.textContent === '—') {
-    // leave blank, user can tap to enter
+  // Build extra pages
+  const extraAIs = Object.keys(parsed).filter(ai => !PRIMARY_AIS.has(ai));
+  extraPages = [];
+  for (let i = 0; i < extraAIs.length; i += EXTRAS_PER_PAGE) {
+    extraPages.push(extraAIs.slice(i, i + EXTRAS_PER_PAGE));
   }
-  inspEl.classList.remove('empty');
-
-  renderExtras(parsed);
+  currentPage = 0;
+  renderExtraPage();
 
   document.getElementById('results-card').classList.add('has-data');
   document.getElementById('confirm-btn').disabled = !(gtin && date);
@@ -374,52 +358,88 @@ function displayData(parsed, raw) {
 }
 
 function setField(id, rowId, val, fmt) {
-  const el = document.getElementById(id);
-  const row = document.getElementById(rowId);
+  const el = document.getElementById(id), row = document.getElementById(rowId);
   if (val) {
     el.textContent = fmt ? fmt(val) : val;
-    el.classList.remove('empty');
-    row.classList.add('filled');
+    el.classList.remove('empty'); row.classList.add('filled');
   } else {
-    el.textContent = '—';
-    el.classList.add('empty');
-    row.classList.remove('filled');
+    el.textContent = '—'; el.classList.add('empty'); row.classList.remove('filled');
   }
 }
 
-function renderExtras(parsed) {
-  const box = document.getElementById('extra-fields');
+function renderExtraPage() {
+  const box = document.getElementById('extra-page-fields');
+  const nav = document.getElementById('page-nav');
   box.innerHTML = '';
-  const extras = Object.keys(parsed).filter(ai => !PRIMARY_AIS.has(ai));
-  if (!extras.length) return;
-  const lbl = document.createElement('div');
-  lbl.className = 'extra-label';
-  lbl.textContent = 'Additional Fields';
-  box.appendChild(lbl);
-  extras.forEach(ai => {
-    const def = GS1_AI[ai];
+
+  if (!extraPages.length) { nav.style.display = 'none'; return; }
+
+  // Show nav
+  nav.style.display = 'flex';
+  const page = extraPages[currentPage];
+  page.forEach(ai => {
+    const def  = GS1_AI[ai];
     const badge = def ? def.badge : `AI ${ai}`;
     const name  = def ? def.name  : `GS1 AI (${ai})`;
-    const dval  = def ? applyFmt(parsed[ai], def.fmt) : parsed[ai];
+    const dval  = def ? applyFmt(scanData.parsed[ai], def.fmt) : scanData.parsed[ai];
     const row   = document.createElement('div');
     row.className = 'field-row filled';
     row.innerHTML = `<div class="field-ai">${badge}</div><div class="field-info"><div class="field-label">${name}</div><div class="field-value">${dval}</div></div>`;
     box.appendChild(row);
   });
+
+  // Update nav state
+  const totalPages = extraPages.length + 1; // page 0 = main, 1+ = extras
+  const displayPage = currentPage + 1;      // for display purposes on extra pages
+  document.getElementById('nav-info').textContent = `PAGE ${currentPage + 2} OF ${totalPages}`;
+
+  const backBtn = document.getElementById('nav-back');
+  const nextBtn = document.getElementById('nav-next');
+  backBtn.className = 'nav-btn' + (currentPage === 0 ? ' disabled' : ' active');
+  nextBtn.className = 'nav-btn' + (currentPage >= extraPages.length - 1 ? ' disabled' : ' active');
 }
 
-/* ===== SCAN REGION CROP ===== */
+function navPage(dir) {
+  const newPage = currentPage + dir;
+  if (newPage < 0 || newPage >= extraPages.length) return;
+  currentPage = newPage;
+  renderExtraPage();
+}
+
+/* ===== SCAN REGION CROP (object-fit:cover aware) ===== */
 function getCropCanvas() {
   const vp  = document.getElementById('scan-viewport');
   const vid = document.getElementById('video');
   const cvs = document.getElementById('crop-canvas');
-  const vw  = vp.clientWidth, vh = vp.clientHeight;
-  const fW  = vw * 0.92, fH = vh * 0.72;
-  const fX  = (vw - fW) / 2, fY = (vh - fH) / 2;
-  const sX  = vid.videoWidth / vw, sY = vid.videoHeight / vh;
-  cvs.width  = fW * sX || 1;
-  cvs.height = fH * sY || 1;
-  cvs.getContext('2d').drawImage(vid, fX*sX, fY*sY, fW*sX, fH*sY, 0, 0, cvs.width, cvs.height);
+
+  const cW = vp.clientWidth, cH = vp.clientHeight;
+  const vW = vid.videoWidth,  vH = vid.videoHeight;
+  if (!vW || !vH) return vid;
+
+  // object-fit: cover scale & offset
+  const cAR = cW / cH, vAR = vW / vH;
+  let scale, offX = 0, offY = 0;
+  if (vAR > cAR) {
+    // video wider → fit height, crop sides
+    scale = vH / cH;
+    offX = (vW - cW * scale) / 2;
+  } else {
+    // video taller → fit width, crop top/bottom
+    scale = vW / cW;
+    offY = (vH - cH * scale) / 2;
+  }
+
+  // aim-frame in container coords: 92% wide, 72% tall, centered
+  const fCW = cW * 0.92, fCH = cH * 0.72;
+  const fCX = (cW - fCW) / 2, fCY = (cH - fCH) / 2;
+
+  // Map to video pixel coords
+  const fVX = fCX * scale + offX, fVY = fCY * scale + offY;
+  const fVW = fCW * scale,        fVH = fCH * scale;
+
+  cvs.width  = Math.round(fVW) || 1;
+  cvs.height = Math.round(fVH) || 1;
+  cvs.getContext('2d').drawImage(vid, fVX, fVY, fVW, fVH, 0, 0, cvs.width, cvs.height);
   return cvs;
 }
 
@@ -437,25 +457,20 @@ function toggleScan() {
 }
 
 async function startScan() {
-  setStatus('Starting camera…','');
-  showViewport();
-  scanning = true;
+  setStatus('Starting camera…',''); showViewport(); scanning = true;
   try {
     const vid = document.getElementById('video');
     const stream = await navigator.mediaDevices.getUserMedia({
       video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}}
     });
-    vid.srcObject = stream;
-    await vid.play();
+    vid.srcObject = stream; await vid.play();
     setStatus('Aim at barcode…','active');
-
     if ('BarcodeDetector' in window) {
       const det = new BarcodeDetector({formats:['code_128','ean_13','ean_8','upc_a','upc_e','itf','pdf417']});
       const loop = async () => {
         if (!scanning) return;
         try {
-          const src = vid.videoWidth > 0 ? getCropCanvas() : vid;
-          const bc  = await det.detect(src);
+          const bc = await det.detect(getCropCanvas());
           if (bc.length) {
             const parsed = parseGS1(bc[0].rawValue);
             if (Object.keys(parsed).length) {
@@ -492,10 +507,7 @@ async function startScan() {
       };
       document.head.appendChild(s);
     }
-  } catch(e) {
-    stopScan(); showReady();
-    setStatus('Camera error — check permissions','error');
-  }
+  } catch(e) { stopScan(); showReady(); setStatus('Camera error — check permissions','error'); }
 }
 
 function stopScan() {
@@ -503,46 +515,36 @@ function stopScan() {
   if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
   if (codeReader) { try{codeReader.reset();}catch(e){} codeReader = null; }
   const vid = document.getElementById('video');
-  if (vid && vid.srcObject) { vid.srcObject.getTracks().forEach(t=>t.stop()); vid.srcObject = null; }
+  if (vid && vid.srcObject) { vid.srcObject.getTracks().forEach(t=>t.stop()); vid.srcObject=null; }
 }
 
 function setStatus(t,c) {
   const el = document.getElementById('scan-status');
-  el.textContent = t;
-  el.className = 'scan-status'+(c?' '+c:'');
+  el.textContent = t; el.className = 'scan-status'+(c?' '+c:'');
 }
 
 /* ===== CLEAR ===== */
 function clearScan() {
-  stopScan(); scanData = null;
+  stopScan(); scanData = null; extraPages = []; currentPage = 0;
   document.getElementById('pid-display').style.display = 'none';
   document.getElementById('pid-value').textContent = '';
-  const fromRow = document.getElementById('row-from');
-  fromRow.style.display = 'none'; fromRow.classList.remove('filled');
-  document.getElementById('val-from').textContent = '—';
   ['val-gtin','val-date','val-weight','val-serial'].forEach(id => {
     const el = document.getElementById(id); el.textContent = '—'; el.classList.add('empty');
   });
   ['row-gtin','row-date','row-weight','row-serial'].forEach(id =>
     document.getElementById(id).classList.remove('filled'));
-  const ins = document.getElementById('val-inspect');
-  ins.textContent = '—'; ins.classList.add('empty');
-  document.getElementById('extra-fields').innerHTML = '';
+  document.getElementById('extra-page-fields').innerHTML = '';
+  document.getElementById('page-nav').style.display = 'none';
   document.getElementById('results-card').classList.remove('has-data');
   document.getElementById('confirm-btn').disabled = true;
-  showReady();
-  setStatus('Tap to scan a barcode','');
+  showReady(); setStatus('Tap to scan a barcode','');
 }
 
 /* ===== INSPECT ===== */
 function editInspect() {
   const cur = document.getElementById('val-inspect').textContent.trim();
-  const v   = prompt('Inspection ID:', cur === '—' ? '' : cur);
-  if (v !== null && v.trim()) {
-    const el = document.getElementById('val-inspect');
-    el.textContent = v.trim();
-    el.classList.remove('empty');
-  }
+  const v = prompt('Inspection ID:', cur);
+  if (v !== null && v.trim()) document.getElementById('val-inspect').textContent = v.trim();
 }
 
 /* ===== CONFIRM ===== */
@@ -555,8 +557,7 @@ function confirmScan() {
     confirmedAt: new Date().toISOString()
   };
   console.log('Payload:', payload);
-  flashScreen();
-  showToast('Order confirmed!');
+  flashScreen(); showToast('Order confirmed!');
 }
 
 function showToast(msg) {
@@ -565,18 +566,16 @@ function showToast(msg) {
     background:var(--green);color:#fff;font-family:'Bebas Neue',sans-serif;
     font-size:.85rem;letter-spacing:2px;padding:10px 20px;border-radius:10px;
     z-index:300;animation:fi .2s ease;white-space:nowrap;`;
-  t.textContent = msg;
-  document.body.appendChild(t);
+  t.textContent = msg; document.body.appendChild(t);
   setTimeout(()=>t.remove(), 2500);
 }
 
 function flashScreen() {
   const f = document.getElementById('flash');
-  f.classList.add('on');
-  setTimeout(()=>f.classList.remove('on'), 200);
+  f.classList.add('on'); setTimeout(()=>f.classList.remove('on'), 200);
 }
 
-/* ===== WINDOW CONTROLS ===== */
+/* ===== FULLSCREEN TOGGLE ===== */
 function toggleFullscreen() {
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen().catch(()=>{});
@@ -585,16 +584,12 @@ function toggleFullscreen() {
   }
 }
 document.addEventListener('fullscreenchange', () => {
-  const ico = document.getElementById('fs-icon');
+  const ico = document.getElementById('win-icon');
   if (!ico) return;
   ico.innerHTML = document.fullscreenElement
     ? `<polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/>`
     : `<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>`;
 });
-function minimizeApp() {
-  if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
-  try { window.blur(); } catch(e) {}
-}
 </script>
 </body>
 </html>

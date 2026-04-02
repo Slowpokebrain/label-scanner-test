@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0f1117">
+<title>Box Scanner</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
+  :root {
+    --bg:#0f1117; --surface:#1a1d27; --card:#22263a;
+    --accent:#00e5ff; --accent-h:#40eeff; --ag:rgba(0,229,255,.22); --as:rgba(0,229,255,.12);
+    --green:#4caf82; --red:#e05c5c; --purple:#b388ff;
+    --text:#e8eaf6; --muted:#7b7f9e; --border:#2e3250;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;overflow:hidden;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;height:100dvh;}
+
+  /* HEADER */
+  header{background:var(--surface);border-bottom:2px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:relative;}
+  .hbrand{display:flex;flex-direction:column;line-height:1;}
+  .hbrand h1{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:3px;color:var(--accent);}
+  .hbrand span{font-size:.55rem;color:var(--muted);letter-spacing:.5px;font-family:'DM Sans',sans-serif;margin-top:1px;}
+  .hmenu{width:36px;height:36px;display:flex;flex-direction:column;justify-content:center;gap:5px;padding:6px;background:var(--card);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;}
+  .hmenu div{width:18px;height:2px;background:var(--accent);border-radius:2px;}
+
+  /* MAIN SCROLL */
+  .main{flex:1;overflow-y:auto;padding:12px 14px 20px;display:flex;flex-direction:column;gap:12px;}
+
+  /* SCANNER CARD */
+  .scan-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;overflow:hidden;}
+  .scan-label{font-family:'Bebas Neue',sans-serif;font-size:.75rem;letter-spacing:2px;color:var(--muted);padding:10px 14px 8px;border-bottom:1px solid var(--border);}
+
+  /* READY STATE */
+  .scan-ready{background:var(--card);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:32px 20px;user-select:none;transition:background .15s;}
+  .scan-ready:active{background:#1e2235;}
+  .scan-ready-icon{position:relative;width:110px;height:70px;}
+  /* Corner brackets */
+  .sri-corner{position:absolute;width:16px;height:16px;border-color:var(--accent);border-style:solid;}
+  .sri-tl{top:0;left:0;border-width:3px 0 0 3px;}
+  .sri-tr{top:0;right:0;border-width:3px 3px 0 0;}
+  .sri-bl{bottom:0;left:0;border-width:0 0 3px 3px;}
+  .sri-br{bottom:0;right:0;border-width:0 3px 3px 0;}
+  /* Barcode lines inside */
+  .sri-inner{position:absolute;inset:12px 14px;display:flex;align-items:stretch;gap:4px;}
+  .sri-bar{flex:1;background:rgba(0,229,255,.5);border-radius:1px;}
+  .sri-wide{flex:2;}
+  .scan-ready-label{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:3px;color:var(--accent);text-shadow:0 0 12px rgba(0,229,255,.4);}
+  .scan-ready-sub{font-size:.6rem;color:var(--muted);letter-spacing:1px;}
+
+  /* ACTIVE VIEWPORT */
+  .scan-viewport{position:relative;width:100%;background:#000;overflow:hidden;}
+  .scan-viewport video{width:100%;height:100%;object-fit:cover;display:block;}
+  #video{width:100%;display:block;}
+  .scan-overlay{position:absolute;inset:0;pointer-events:none;}
+  .scan-overlay::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,rgba(0,0,0,0) 25%,rgba(0,0,0,0) 75%,rgba(0,0,0,.5) 100%);}
+  .aim-frame{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80%;height:40%;border:2px solid var(--accent);border-radius:6px;box-shadow:0 0 0 1200px rgba(0,0,0,.45);animation:aim-pulse 2s ease-in-out infinite;}
+  .aim-corner{position:absolute;width:14px;height:14px;border-color:var(--accent);border-style:solid;}
+  .aim-corner.tl{top:-2px;left:-2px;border-width:3px 0 0 3px;border-radius:4px 0 0 0;}
+  .aim-corner.tr{top:-2px;right:-2px;border-width:3px 3px 0 0;border-radius:0 4px 0 0;}
+  .aim-corner.bl{bottom:-2px;left:-2px;border-width:0 0 3px 3px;border-radius:0 0 0 4px;}
+  .aim-corner.br{bottom:-2px;right:-2px;border-width:0 3px 3px 0;border-radius:0 0 4px 0;}
+  .scan-line{position:absolute;left:4%;right:4%;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:scan-line 1.8s ease-in-out infinite;}
+  .scan-cancel-btn{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);font-family:'Bebas Neue',sans-serif;font-size:.8rem;letter-spacing:1.5px;padding:8px 20px;border-radius:8px;border:1.5px solid rgba(224,92,92,.5);background:rgba(224,92,92,.15);color:var(--red);cursor:pointer;pointer-events:all;z-index:10;}
+  @keyframes aim-pulse{0%,100%{border-color:var(--accent);box-shadow:0 0 0 1200px rgba(0,0,0,.45),0 0 12px rgba(0,229,255,.3);}50%{border-color:var(--accent-h);box-shadow:0 0 0 1200px rgba(0,0,0,.45),0 0 22px rgba(0,229,255,.6);}}
+  @keyframes scan-line{0%{top:20%;opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{top:80%;opacity:0;}}
+
+  .scan-footer{padding:8px 14px 10px;text-align:center;}
+  .scan-status{font-size:.68rem;color:var(--muted);letter-spacing:.5px;}
+  .scan-status.active{color:var(--accent);}
+  .scan-status.success{color:var(--green);}
+  .scan-status.error{color:var(--red);}
+
+  /* RESULTS CARD */
+  .results-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .3s;}
+  .results-card.has-data{border-color:rgba(0,229,255,.35);}
+  .results-grid{padding:12px 14px;display:flex;flex-direction:column;gap:8px;}
+
+  .field-row{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--card);border-radius:10px;border:1px solid var(--border);transition:border-color .2s;}
+  .field-row.filled{border-color:rgba(0,229,255,.2);}
+  .field-ai{font-family:'Bebas Neue',sans-serif;font-size:.6rem;letter-spacing:1px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:2px 6px;white-space:nowrap;flex-shrink:0;min-width:42px;text-align:center;}
+  .field-info{flex:1;min-width:0;}
+  .field-label{font-size:.58rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);line-height:1;}
+  .field-value{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:1.5px;color:var(--accent);line-height:1.2;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .field-value.empty{color:var(--border);font-size:.7rem;font-family:'DM Sans',sans-serif;letter-spacing:.5px;}
+
+  /* Highlighted product ID row */
+  .field-row.highlight{border-color:rgba(179,136,255,.3);background:rgba(179,136,255,.06);}
+  .field-row.highlight .field-value{color:var(--purple);}
+  .field-row.highlight .field-ai{border-color:rgba(179,136,255,.3);color:var(--purple);}
+
+  /* INSPECTION ID */
+
+  /* CONFIRM */
+  .confirm-btn{width:100%;padding:16px;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:3px;border-radius:12px;border:none;background:var(--accent);color:#000;cursor:pointer;transition:all .2s;flex-shrink:0;}
+  .confirm-btn:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;}
+  .confirm-btn:not(:disabled):active{transform:scale(.98);}
+
+  /* RAW DATA (collapsed) */
+  .raw-toggle{font-size:.62rem;color:var(--muted);letter-spacing:.5px;padding:6px 14px;cursor:pointer;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .raw-toggle span{font-family:'Bebas Neue',sans-serif;font-size:.62rem;letter-spacing:1px;}
+  .raw-body{display:none;padding:8px 14px 10px;word-break:break-all;font-size:.6rem;color:var(--muted);font-family:monospace;border-top:1px solid var(--border);}
+  .raw-body.open{display:block;}
+
+  /* MENU MODAL */
+  .mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:100;align-items:flex-end;justify-content:center;}
+  .mo.open{display:flex;animation:fi .2s ease;}
+  .md-sheet{background:var(--surface);border:2px solid var(--border);border-radius:18px 18px 0 0;padding:20px 20px 36px;width:100%;}
+  .md-sheet h2{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:3px;color:var(--accent);margin-bottom:16px;}
+  .sheet-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);}
+  .sheet-lbl{font-size:.72rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+  .sheet-btn{font-family:'Bebas Neue',sans-serif;font-size:.78rem;letter-spacing:1px;padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;transition:all .15s;}
+  .sheet-btn:active{border-color:var(--accent);color:var(--accent);}
+  .sheet-close{margin-top:14px;width:100%;padding:12px;font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:2px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;}
+
+  /* SUCCESS FLASH */
+  .flash{position:fixed;inset:0;background:rgba(0,229,255,.12);pointer-events:none;opacity:0;transition:opacity .15s;z-index:200;}
+  .flash.on{opacity:1;}
+
+  @keyframes fi{from{opacity:0}to{opacity:1}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hbrand">
+    <h1>Box Scanner</h1>
+    <span>Poultry Processing</span>
+  </div>
+  <div id="pid-display" style="position:absolute;left:50%;transform:translateX(-50%);text-align:center;display:none;">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:4px;color:var(--accent);text-shadow:0 0 12px rgba(0,229,255,.5);line-height:1;" id="pid-value"></div>
+    <div style="font-size:.5rem;color:var(--muted);letter-spacing:1px;margin-top:1px;">PRODUCT ID</div>
+  </div>
+  <div class="hmenu" onclick="openMenu()">
+    <div></div><div></div><div></div>
+  </div>
+</header>
+
+<div class="main" id="main">
+
+  <!-- SCANNER -->
+  <div class="scan-card" id="scan-card">
+    <div class="scan-label">Camera</div>
+
+    <!-- READY STATE: tap to scan -->
+    <div class="scan-ready" id="scan-ready" onclick="startScan()">
+      <div class="scan-ready-icon">
+        <div class="sri-corner sri-tl"></div>
+        <div class="sri-corner sri-tr"></div>
+        <div class="sri-corner sri-bl"></div>
+        <div class="sri-corner sri-br"></div>
+        <div class="sri-inner">
+          <div class="sri-bar"></div>
+          <div class="sri-bar"></div>
+          <div class="sri-bar sri-wide"></div>
+          <div class="sri-bar"></div>
+          <div class="sri-bar sri-wide"></div>
+        </div>
+      </div>
+      <div class="scan-ready-label">TAP TO SCAN</div>
+      
+    </div>
+
+    <!-- ACTIVE STATE: live camera -->
+    <div class="scan-viewport" id="scan-viewport" style="display:none;">
+      <video id="video" playsinline muted></video>
+      <div class="scan-overlay">
+        <div class="aim-frame">
+          <div class="aim-corner tl"></div>
+          <div class="aim-corner tr"></div>
+          <div class="aim-corner bl"></div>
+          <div class="aim-corner br"></div>
+          <div class="scan-line"></div>
+        </div>
+      </div>
+      <button class="scan-cancel-btn" onclick="cancelScan()">✕ CANCEL</button>
+    </div>
+
+    <div class="scan-footer">
+      <div class="scan-status" id="scan-status">Tap to scan a barcode</div>
+    </div>
+  </div>
+
+  <!-- PARSED RESULTS -->
+  <div class="results-card" id="results-card">
+    <div class="results-grid">
+
+      <!-- GTIN -->
+      <div class="field-row" id="row-gtin">
+        <div class="field-ai">(01)</div>
+        <div class="field-info">
+          <div class="field-label">GTIN / Product</div>
+          <div class="field-value empty" id="val-gtin">—</div>
+        </div>
+      </div>
+      <!-- Pack Date -->
+      <div class="field-row" id="row-date">
+        <div class="field-ai">(13)</div>
+        <div class="field-info">
+          <div class="field-label">Pack Date</div>
+          <div class="field-value empty" id="val-date">—</div>
+        </div>
+      </div>
+      <!-- Weight -->
+      <div class="field-row" id="row-weight">
+        <div class="field-ai">(3202)</div>
+        <div class="field-info">
+          <div class="field-label">Weight (lbs)</div>
+          <div class="field-value empty" id="val-weight">—</div>
+        </div>
+      </div>
+      <!-- Serial -->
+      <div class="field-row" id="row-serial">
+        <div class="field-ai">(21)</div>
+        <div class="field-info">
+          <div class="field-label">Serial Number</div>
+          <div class="field-value empty" id="val-serial">—</div>
+        </div>
+      </div>
+      <!-- Inspection ID -->
+      <div class="field-row" id="row-inspect" style="border-color:rgba(0,229,255,.35);background:rgba(0,229,255,.06);">
+        <div class="field-ai" style="border-color:rgba(0,229,255,.35);color:var(--accent);">ID</div>
+        <div class="field-info">
+          <div class="field-label">Inspection ID</div>
+          <div class="field-value" id="val-inspect" style="color:var(--accent);cursor:pointer;" onclick="editInspect()">P-47016</div>
+        </div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:.6rem;color:var(--muted);padding-left:4px;cursor:pointer;" onclick="editInspect()">✏</div>
+      </div>
+    </div>
+    <div class="raw-toggle" onclick="toggleRaw()">
+      <span id="raw-lbl">RAW DATA</span>
+      <span id="raw-arrow">▼</span>
+    </div>
+    <div class="raw-body" id="raw-body"></div>
+  </div>
+
+  <!-- CONFIRM -->
+  <button class="confirm-btn" id="confirm-btn" onclick="confirmScan()" disabled>CONFIRM</button>
+
+</div><!-- /main -->
+
+<!-- FLASH -->
+<div class="flash" id="flash"></div>
+
+<!-- MENU SHEET -->
+<div class="mo" id="mo-menu">
+  <div class="md-sheet">
+    <h2>Options</h2>
+    <div class="sheet-row">
+      <span class="sheet-lbl">Full Screen</span>
+      <button class="sheet-btn" id="fs-btn" onclick="toggleFullscreen()">ENTER</button>
+    </div>
+    <div class="sheet-row">
+      <span class="sheet-lbl">Clear Scan</span>
+      <button class="sheet-btn" onclick="clearScan();closeMenu()">CLEAR</button>
+    </div>
+    <div class="sheet-row">
+      <span class="sheet-lbl">Version</span>
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:.72rem;letter-spacing:1px;color:var(--muted);">Box Scanner v1.0</span>
+    </div>
+    <button class="sheet-close" onclick="closeMenu()">CLOSE</button>
+  </div>
+</div>
+
+<script src="https://unpkg.com/@zxing/library@0.18.6/umd/index.min.js"></script>
+<script>
+/* ==================== STATE ==================== */
+let scanning = false;
+let codeReader = null;
+let scanData = null;
+let rawOpen = false;
+
+/* ==================== BARCODE PARSER ==================== */
+function parseGS1(raw) {
+  // Strip AIM identifier ]C1 if present
+  let data = raw.startsWith(']C1') ? raw.slice(3) : raw;
+  const result = {};
+  let i = 0;
+
+  while (i < data.length) {
+    // Try 4-char AI first (e.g. 3202), then 3, then 2
+    const ai4 = data.substr(i, 4);
+    const ai3 = data.substr(i, 3);
+    const ai2 = data.substr(i, 2);
+
+    if (ai4 === '3202') {
+      result.ai3202 = data.substr(i + 4, 6);
+      i += 10;
+    } else if (ai2 === '01') {
+      result.ai01 = data.substr(i + 2, 14);
+      i += 16;
+    } else if (ai2 === '13') {
+      result.ai13 = data.substr(i + 2, 6);
+      i += 8;
+    } else if (ai2 === '21') {
+      result.ai21 = data.substr(i + 2);
+      break;
+    } else {
+      i++;
+    }
+  }
+  return result;
+}
+
+function formatDate(yymmdd) {
+  if (!yymmdd || yymmdd.length !== 6) return yymmdd;
+  const yy = yymmdd.substr(0, 2);
+  const mm = yymmdd.substr(2, 2);
+  const dd = yymmdd.substr(4, 2);
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const monthName = months[parseInt(mm, 10) - 1] || mm;
+  return `${monthName} ${dd}, 20${yy}`;
+}
+
+function formatWeight(raw) {
+  if (!raw) return raw;
+  // 3202 = 2 implied decimal places → divide by 100
+  const num = parseInt(raw, 10) / 100;
+  return num.toFixed(2) + ' lbs';
+}
+
+function extractProductId(gtin) {
+  // Product ID is digits 8–12 (0-indexed) of the 14-digit GTIN
+  if (!gtin || gtin.length < 13) return null;
+  return gtin.substr(8, 5);
+}
+
+/* ==================== DISPLAY PARSED DATA ==================== */
+function displayData(parsed, raw) {
+  scanData = { parsed, raw };
+
+  const gtin = parsed.ai01 || '';
+  const pid  = extractProductId(gtin);
+  const date = parsed.ai13 || '';
+  const wt   = parsed.ai3202 || '';
+  const ser  = parsed.ai21 || '';
+
+  function setField(id, rowId, value, formatter) {
+    const el = document.getElementById(id);
+    const row = document.getElementById(rowId);
+    const displayVal = formatter ? formatter(value) : value;
+    if (value) {
+      el.textContent = displayVal;
+      el.classList.remove('empty');
+      row.classList.add('filled');
+    } else {
+      el.textContent = '—';
+      el.classList.add('empty');
+    }
+  }
+
+  // Product ID
+  // Show product ID in header
+  const pidDisplay = document.getElementById('pid-display');
+  const pidValue = document.getElementById('pid-value');
+  if (pid && pidDisplay) {
+    pidValue.textContent = pid;
+    pidDisplay.style.display = 'block';
+  }
+
+  setField('val-gtin', 'row-gtin', gtin);
+  setField('val-date', 'row-date', date, formatDate);
+  setField('val-weight', 'row-weight', wt, formatWeight);
+  setField('val-serial', 'row-serial', ser);
+
+  // Raw data
+  const rawBody = document.getElementById('raw-body');
+  rawBody.textContent = raw;
+
+  // Card state
+  document.getElementById('results-card').classList.add('has-data');
+  // Enable confirm if we have at least GTIN and date
+  document.getElementById('confirm-btn').disabled = !(gtin && date);
+
+  // Flash
+  flashScreen();
+}
+
+/* ==================== SCANNER ==================== */
+function showReady() {
+  document.getElementById('scan-ready').style.display = 'flex';
+  document.getElementById('scan-viewport').style.display = 'none';
+}
+
+function showViewport() {
+  document.getElementById('scan-ready').style.display = 'none';
+  document.getElementById('scan-viewport').style.display = 'block';
+}
+
+function cancelScan() {
+  stopScan();
+  showReady();
+  setStatus('Tap to scan a barcode', '');
+}
+
+async function startScan() {
+  const status = document.getElementById('scan-status');
+  setStatus('Starting camera…', '');
+
+  try {
+    showViewport();
+    scanning = true;
+
+    const ZXing = window.ZXing;
+    codeReader = new ZXing.BrowserMultiFormatReader();
+
+    const videoEl = document.getElementById('video');
+
+    // Use environment-facing (back) camera
+    const hints = new Map();
+    hints.set(ZXing.DecodeHintType.TRY_HARDER, true);
+    codeReader.hints = hints;
+
+    const constraints = { video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } } };
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    videoEl.srcObject = stream;
+    await videoEl.play();
+
+    // Adjust viewport height to match video
+    const vp = document.getElementById('scan-viewport');
+    vp.style.height = (vp.offsetWidth * 9/16) + 'px';
+
+    setStatus('Aim at barcode…', 'active');
+
+    codeReader._stream = stream;
+
+    await codeReader.decodeFromStream(stream, videoEl, (result, err) => {
+      if (result && scanning) {
+        const raw = result.getText();
+        const parsed = parseGS1(raw);
+        if (parsed.ai01 || parsed.ai13 || parsed.ai3202 || parsed.ai21) {
+          stopScan();
+          showReady();
+          displayData(parsed, raw);
+          setStatus('✓ Scanned — tap to scan again', 'success');
+        }
+      }
+    });
+
+  } catch (e) {
+    stopScan();
+    showReady();
+    setStatus('Camera error — check permissions', 'error');
+  }
+}
+
+function stopScan() {
+  if (codeReader) {
+    try {
+      if (codeReader._stream) {
+        codeReader._stream.getTracks().forEach(t => t.stop());
+        codeReader._stream = null;
+      }
+      codeReader.reset();
+    } catch(e){}
+    codeReader = null;
+  }
+  scanning = false;
+}
+
+function setStatus(text, cls) {
+  const el = document.getElementById('scan-status');
+  el.textContent = text;
+  el.className = 'scan-status' + (cls ? ' ' + cls : '');
+}
+
+function clearScan() {
+  stopScan();
+  scanData = null;
+  const fields = ['val-gtin','val-date','val-weight','val-serial'];
+  const pidDisp = document.getElementById('pid-display');
+  if (pidDisp) pidDisp.style.display = 'none';
+  const rows   = ['row-gtin','row-date','row-weight','row-serial'];
+  const empties = ['—','—','—','—'];
+  fields.forEach((id, i) => {
+    const el = document.getElementById(id);
+    el.textContent = empties[i];
+    el.classList.add('empty');
+    document.getElementById(rows[i]).classList.remove('filled');
+  });
+  document.getElementById('results-card').classList.remove('has-data');
+  document.getElementById('results-badge').classList.remove('show');
+  document.getElementById('raw-body').textContent = '';
+  showReady();
+  setStatus('Tap to scan a barcode', '');
+  document.getElementById('confirm-btn').disabled = true;
+  if (rawOpen) toggleRaw();
+}
+
+/* ==================== RAW TOGGLE ==================== */
+function toggleRaw() {
+  rawOpen = !rawOpen;
+  document.getElementById('raw-body').classList.toggle('open', rawOpen);
+  document.getElementById('raw-arrow').textContent = rawOpen ? '▲' : '▼';
+}
+
+/* ==================== INSPECT ==================== */
+function editInspect() {
+  const current = document.getElementById('val-inspect').textContent.trim();
+  const val = prompt('Inspection ID:', current);
+  if (val && val.trim()) {
+    document.getElementById('val-inspect').textContent = val.trim();
+  }
+}
+
+/* ==================== CONFIRM ==================== */
+function confirmScan() {
+  if (!scanData) return;
+  const inspectId = document.getElementById('val-inspect').textContent.trim();
+  const payload = {
+    productId: extractProductId(scanData.parsed.ai01 || ''),
+    gtin: scanData.parsed.ai01,
+    packDate: scanData.parsed.ai13,
+    weight: scanData.parsed.ai3202,
+    serial: scanData.parsed.ai21,
+    inspectionId: inspectId,
+    confirmedAt: new Date().toISOString()
+  };
+  // TODO: send to Power Automate / API
+  flashScreen();
+  showToast('Order confirmed!');
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = `position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
+    background:var(--green);color:#fff;font-family:'Bebas Neue',sans-serif;
+    font-size:.85rem;letter-spacing:2px;padding:10px 20px;border-radius:10px;
+    z-index:300;animation:fi .2s ease;white-space:nowrap;`;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+
+/* ==================== FLASH ==================== */
+function flashScreen() {
+  const f = document.getElementById('flash');
+  f.classList.add('on');
+  setTimeout(() => f.classList.remove('on'), 200);
+}
+
+/* ==================== MENU ==================== */
+function openMenu() { document.getElementById('mo-menu').classList.add('open'); }
+function closeMenu() { document.getElementById('mo-menu').classList.remove('open'); }
+
+function toggleFullscreen() {
+  closeMenu();
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen().catch(() => {});
+  }
+}
+
+document.addEventListener('fullscreenchange', () => {
+  const btn = document.getElementById('fs-btn');
+  if (btn) btn.textContent = document.fullscreenElement ? 'EXIT' : 'ENTER';
+});
+
+</script>
+</body>
+</html>

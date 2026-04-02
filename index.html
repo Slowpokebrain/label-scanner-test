@@ -34,7 +34,7 @@
   .scan-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;overflow:hidden;}
 
   /* READY STATE */
-  .scan-ready{background:var(--card);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:32px 20px;user-select:none;transition:background .15s;min-height:60vw;}
+  .scan-ready{background:var(--card);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;user-select:none;transition:background .15s;min-height:120px;}
   .scan-ready:active{background:#1e2235;}
   .scan-ready-icon{position:relative;width:110px;height:70px;}
   /* Corner brackets */
@@ -50,7 +50,7 @@
   .scan-ready-label{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:3px;color:var(--accent);text-shadow:0 0 12px rgba(0,229,255,.4);}
 
   /* ACTIVE VIEWPORT */
-  .scan-viewport{position:relative;width:100%;background:#000;overflow:hidden;min-height:60vw;}
+  .scan-viewport{position:relative;width:100%;background:#000;overflow:hidden;height:38vw;max-height:220px;}
   .scan-viewport video{width:100%;height:100%;object-fit:cover;display:block;}
   #video{width:100%;display:block;}
   .scan-overlay{position:absolute;inset:0;pointer-events:none;}
@@ -79,7 +79,7 @@
 
   .field-row{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--card);border-radius:10px;border:1px solid var(--border);transition:border-color .2s;}
   .field-row.filled{border-color:rgba(0,229,255,.2);}
-  .field-ai{font-family:'Bebas Neue',sans-serif;font-size:.6rem;letter-spacing:1px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:2px 6px;white-space:nowrap;flex-shrink:0;min-width:42px;text-align:center;}
+  .field-ai{font-family:'Bebas Neue',sans-serif;font-size:.6rem;letter-spacing:1px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:2px 8px;white-space:nowrap;flex-shrink:0;min-width:58px;text-align:center;}
   .field-info{flex:1;min-width:0;}
   .field-label{font-size:.58rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);line-height:1;}
   .field-value{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:1.5px;color:var(--accent);line-height:1.2;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -120,12 +120,12 @@
 <body>
 
 <header>
-  <div class="hbrand">
-    <h1>Box Scanner</h1>
-  </div>
-  <div id="pid-display" style="position:absolute;left:50%;transform:translateX(-50%);text-align:center;display:none;">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:4px;color:var(--accent);text-shadow:0 0 12px rgba(0,229,255,.5);line-height:1;" id="pid-value"></div>
-    <div style="font-size:.5rem;color:var(--muted);letter-spacing:1px;margin-top:1px;">PRODUCT ID</div>
+  <div class="hbrand"></div>
+  <div id="pid-display" style="position:absolute;left:50%;transform:translateX(-50%);display:none;">
+    <div style="background:var(--card);border:1.5px solid rgba(0,229,255,.45);border-radius:10px;padding:6px 18px;text-align:center;box-shadow:0 0 14px rgba(0,229,255,.15);">
+      <div style="font-size:.5rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:2px;">Product ID</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:5px;color:var(--accent);text-shadow:0 0 12px rgba(0,229,255,.5);line-height:1;" id="pid-value"></div>
+    </div>
   </div>
   <div class="hmenu" onclick="openMenu()">
     <div></div><div></div><div></div>
@@ -138,7 +138,7 @@
   <div class="scan-card" id="scan-card">
 
     <!-- READY STATE: tap to scan -->
-    <div class="scan-ready" id="scan-ready" onclick="startScan()">
+    <div class="scan-ready" id="scan-ready" onclick="toggleScan()">
       <div class="scan-ready-icon">
         <div class="sri-corner sri-tl"></div>
         <div class="sri-corner sri-tr"></div>
@@ -157,7 +157,7 @@
     </div>
 
     <!-- ACTIVE STATE: live camera -->
-    <div class="scan-viewport" id="scan-viewport" style="display:none;">
+    <div class="scan-viewport" id="scan-viewport" style="display:none;" onclick="toggleScan()">
       <video id="video" playsinline muted></video>
       <div class="scan-overlay">
         <div class="aim-frame">
@@ -168,7 +168,6 @@
           <div class="scan-line"></div>
         </div>
       </div>
-      <button class="scan-cancel-btn" onclick="cancelScan()">✕ CANCEL</button>
     </div>
 
     <div class="scan-footer">
@@ -182,7 +181,7 @@
 
       <!-- GTIN -->
       <div class="field-row" id="row-gtin">
-        <div class="field-ai">(01)</div>
+        <div class="field-ai">GTIN</div>
         <div class="field-info">
           <div class="field-label">GTIN / Product</div>
           <div class="field-value empty" id="val-gtin">—</div>
@@ -190,7 +189,7 @@
       </div>
       <!-- Pack Date -->
       <div class="field-row" id="row-date">
-        <div class="field-ai">(13)</div>
+        <div class="field-ai">Pack Date</div>
         <div class="field-info">
           <div class="field-label">Pack Date</div>
           <div class="field-value empty" id="val-date">—</div>
@@ -198,7 +197,7 @@
       </div>
       <!-- Weight -->
       <div class="field-row" id="row-weight">
-        <div class="field-ai">(3202)</div>
+        <div class="field-ai">Weight</div>
         <div class="field-info">
           <div class="field-label">Weight (lbs)</div>
           <div class="field-value empty" id="val-weight">—</div>
@@ -206,15 +205,15 @@
       </div>
       <!-- Serial -->
       <div class="field-row" id="row-serial">
-        <div class="field-ai">(21)</div>
+        <div class="field-ai">Serial</div>
         <div class="field-info">
           <div class="field-label">Serial Number</div>
           <div class="field-value empty" id="val-serial">—</div>
         </div>
       </div>
-      <!-- Inspection ID -->
-      <div class="field-row" id="row-inspect" style="border-color:rgba(0,229,255,.35);background:rgba(0,229,255,.06);">
-        <div class="field-ai" style="border-color:rgba(0,229,255,.35);color:var(--accent);">ID</div>
+      <!-- Inspection ID (hidden until scan) -->
+      <div class="field-row" id="row-inspect" style="border-color:rgba(0,229,255,.35);background:rgba(0,229,255,.06);display:none;">
+        <div class="field-ai" style="border-color:rgba(0,229,255,.35);color:var(--accent);font-size:.52rem;letter-spacing:.5px;">Inspect ID</div>
         <div class="field-info">
           <div class="field-label">Inspection ID</div>
           <div class="field-value" id="val-inspect" style="color:var(--accent);cursor:pointer;" onclick="editInspect()">P-47016</div>
@@ -355,6 +354,8 @@ function displayData(parsed, raw) {
 
   // Card state
   document.getElementById('results-card').classList.add('has-data');
+  // Show inspection ID row
+  document.getElementById('row-inspect').style.display = 'flex';
   // Enable confirm if we have at least GTIN and date
   document.getElementById('confirm-btn').disabled = !(gtin && date);
 
@@ -371,6 +372,16 @@ function showReady() {
 function showViewport() {
   document.getElementById('scan-ready').style.display = 'none';
   document.getElementById('scan-viewport').style.display = 'block';
+}
+
+function toggleScan() {
+  if (scanning) {
+    stopScan();
+    showReady();
+    setStatus('Tap to scan a barcode', '');
+  } else {
+    startScan();
+  }
 }
 
 function cancelScan() {
@@ -496,6 +507,7 @@ function clearScan() {
     document.getElementById(rows[i]).classList.remove('filled');
   });
   document.getElementById('results-card').classList.remove('has-data');
+  document.getElementById('row-inspect').style.display = 'none';
   document.getElementById('results-badge').classList.remove('show');
   showReady();
   setStatus('Tap to scan a barcode', '');

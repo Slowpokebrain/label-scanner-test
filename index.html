@@ -12,7 +12,7 @@
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
   :root {
     --bg:#0f1117; --surface:#1a1d27; --card:#22263a;
-    --accent:#00e5ff; --accent-h:#40eeff; --ag:rgba(0,229,255,.22); --as:rgba(0,229,255,.12);
+    --accent:#00e5ff; --accent-h:#40eeff;
     --green:#4caf82; --red:#e05c5c; --purple:#b388ff;
     --text:#e8eaf6; --muted:#7b7f9e; --border:#2e3250;
   }
@@ -21,150 +21,136 @@
   body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;height:100dvh;}
 
   /* HEADER */
-  header{background:var(--surface);border-bottom:2px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:relative;}
-  .hbrand{display:flex;flex-direction:column;line-height:1;}
-  .hbrand h1{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:3px;color:var(--accent);}
-  .hmenu{width:36px;height:36px;display:flex;flex-direction:column;justify-content:center;gap:5px;padding:6px;background:var(--card);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;}
-  .hmenu div{width:18px;height:2px;background:var(--accent);border-radius:2px;}
+  header{background:var(--surface);border-bottom:2px solid var(--border);padding:8px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:8px;}
 
-  /* MAIN SCROLL */
+  .h-refresh{width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1.5px solid var(--border);border-radius:50%;cursor:pointer;flex-shrink:0;}
+  .h-refresh:active{border-color:var(--accent);}
+  .h-refresh svg{width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
+
+  #pid-display{flex:1;justify-content:center;display:none;}
+  .pid-box{background:var(--card);border:1.5px solid rgba(0,229,255,.45);border-radius:10px;padding:5px 16px;text-align:center;box-shadow:0 0 14px rgba(0,229,255,.15);}
+  .pid-label{font-size:.48rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:1px;}
+  .pid-val{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:5px;color:var(--accent);text-shadow:0 0 12px rgba(0,229,255,.5);line-height:1;}
+
+  .h-controls{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+  .h-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;}
+  .h-btn:active{border-color:var(--accent);}
+  .h-btn svg{width:15px;height:15px;stroke:var(--muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+  /* MAIN */
   .main{flex:1;overflow-y:auto;padding:12px 14px 20px;display:flex;flex-direction:column;gap:12px;}
 
   /* SCANNER CARD */
   .scan-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;overflow:hidden;}
-
-  /* READY STATE */
-  .scan-ready{background:var(--card);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;user-select:none;transition:background .15s;min-height:120px;}
+  .scan-ready{background:var(--card);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:18px 20px;user-select:none;transition:background .15s;min-height:110px;}
   .scan-ready:active{background:#1e2235;}
-  .scan-ready-icon{position:relative;width:110px;height:70px;}
-  /* Corner brackets */
-  .sri-corner{position:absolute;width:16px;height:16px;border-color:var(--accent);border-style:solid;}
+  .scan-ready-icon{position:relative;width:100px;height:60px;}
+  .sri-corner{position:absolute;width:14px;height:14px;border-color:var(--accent);border-style:solid;}
   .sri-tl{top:0;left:0;border-width:3px 0 0 3px;}
   .sri-tr{top:0;right:0;border-width:3px 3px 0 0;}
   .sri-bl{bottom:0;left:0;border-width:0 0 3px 3px;}
   .sri-br{bottom:0;right:0;border-width:0 3px 3px 0;}
-  /* Barcode lines inside */
-  .sri-inner{position:absolute;inset:12px 14px;display:flex;align-items:stretch;gap:4px;}
+  .sri-inner{position:absolute;inset:10px 12px;display:flex;align-items:stretch;gap:4px;}
   .sri-bar{flex:1;background:rgba(0,229,255,.5);border-radius:1px;}
   .sri-wide{flex:2;}
-  .scan-ready-label{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:3px;color:var(--accent);text-shadow:0 0 12px rgba(0,229,255,.4);}
+  .scan-ready-label{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:3px;color:var(--accent);text-shadow:0 0 12px rgba(0,229,255,.4);}
 
-  /* ACTIVE VIEWPORT */
-  .scan-viewport{position:relative;width:100%;background:#000;overflow:hidden;height:38vw;max-height:220px;}
-  .scan-viewport video{width:100%;height:100%;object-fit:cover;display:block;}
-  #video{width:100%;display:block;}
+  /* VIEWPORT */
+  .scan-viewport{position:relative;width:100%;background:#000;overflow:hidden;height:40vw;max-height:230px;}
+  .scan-viewport video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  #crop-canvas{display:none;}
   .scan-overlay{position:absolute;inset:0;pointer-events:none;}
-  .scan-overlay::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,rgba(0,0,0,0) 25%,rgba(0,0,0,0) 75%,rgba(0,0,0,.5) 100%);}
-  .aim-frame{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80%;height:40%;border:2px solid var(--accent);border-radius:6px;box-shadow:0 0 0 1200px rgba(0,0,0,.45);animation:aim-pulse 2s ease-in-out infinite;}
+  .aim-frame{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:92%;height:72%;border:2px solid var(--accent);border-radius:6px;box-shadow:0 0 0 1200px rgba(0,0,0,.5);animation:aim-pulse 2s ease-in-out infinite;}
   .aim-corner{position:absolute;width:14px;height:14px;border-color:var(--accent);border-style:solid;}
   .aim-corner.tl{top:-2px;left:-2px;border-width:3px 0 0 3px;border-radius:4px 0 0 0;}
   .aim-corner.tr{top:-2px;right:-2px;border-width:3px 3px 0 0;border-radius:0 4px 0 0;}
   .aim-corner.bl{bottom:-2px;left:-2px;border-width:0 0 3px 3px;border-radius:0 0 0 4px;}
   .aim-corner.br{bottom:-2px;right:-2px;border-width:0 3px 3px 0;border-radius:0 0 4px 0;}
-  .scan-line{position:absolute;left:4%;right:4%;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:scan-line 1.8s ease-in-out infinite;}
-  .scan-cancel-btn{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);font-family:'Bebas Neue',sans-serif;font-size:.8rem;letter-spacing:1.5px;padding:8px 20px;border-radius:8px;border:1.5px solid rgba(224,92,92,.5);background:rgba(224,92,92,.15);color:var(--red);cursor:pointer;pointer-events:all;z-index:10;}
-  @keyframes aim-pulse{0%,100%{border-color:var(--accent);box-shadow:0 0 0 1200px rgba(0,0,0,.45),0 0 12px rgba(0,229,255,.3);}50%{border-color:var(--accent-h);box-shadow:0 0 0 1200px rgba(0,0,0,.45),0 0 22px rgba(0,229,255,.6);}}
-  @keyframes scan-line{0%{top:20%;opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{top:80%;opacity:0;}}
+  .scan-line{position:absolute;left:2%;right:2%;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:scan-line 1.8s ease-in-out infinite;}
+  @keyframes aim-pulse{0%,100%{border-color:var(--accent);box-shadow:0 0 0 1200px rgba(0,0,0,.5),0 0 12px rgba(0,229,255,.3);}50%{border-color:var(--accent-h);box-shadow:0 0 0 1200px rgba(0,0,0,.5),0 0 22px rgba(0,229,255,.6);}}
+  @keyframes scan-line{0%{top:15%;opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{top:85%;opacity:0;}}
 
-  .scan-footer{padding:6px 14px 8px;text-align:center;}
-  .scan-status{font-size:.65rem;color:var(--muted);letter-spacing:.5px;}
+  .scan-footer{padding:5px 14px 7px;text-align:center;}
+  .scan-status{font-size:.62rem;color:var(--muted);letter-spacing:.5px;}
   .scan-status.active{color:var(--accent);}
   .scan-status.success{color:var(--green);}
   .scan-status.error{color:var(--red);}
 
-  /* RESULTS CARD */
+  /* RESULTS */
   .results-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .3s;}
   .results-card.has-data{border-color:rgba(0,229,255,.35);}
   .results-grid{padding:12px 14px;display:flex;flex-direction:column;gap:8px;}
 
   .field-row{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--card);border-radius:10px;border:1px solid var(--border);transition:border-color .2s;}
   .field-row.filled{border-color:rgba(0,229,255,.2);}
-  .field-ai{font-family:'Bebas Neue',sans-serif;font-size:.6rem;letter-spacing:1px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:2px 8px;white-space:nowrap;flex-shrink:0;min-width:58px;text-align:center;}
+  .field-ai{font-family:'Bebas Neue',sans-serif;font-size:.58rem;letter-spacing:.8px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:2px 7px;white-space:nowrap;flex-shrink:0;min-width:62px;text-align:center;}
   .field-info{flex:1;min-width:0;}
-  .field-label{font-size:.58rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);line-height:1;}
+  .field-label{font-size:.56rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);line-height:1;}
   .field-value{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:1.5px;color:var(--accent);line-height:1.2;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .field-value.empty{color:var(--border);font-size:.7rem;font-family:'DM Sans',sans-serif;letter-spacing:.5px;}
 
-  /* Highlighted product ID row */
-  .field-row.highlight{border-color:rgba(179,136,255,.3);background:rgba(179,136,255,.06);}
-  .field-row.highlight .field-value{color:var(--purple);}
-  .field-row.highlight .field-ai{border-color:rgba(179,136,255,.3);color:var(--purple);}
+  .inspect-row{border-color:rgba(0,229,255,.35)!important;background:rgba(0,229,255,.06)!important;}
+  .inspect-row .field-ai{border-color:rgba(0,229,255,.35)!important;color:var(--accent)!important;}
 
-  /* INSPECTION ID */
+  .extra-label{font-size:.52rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);padding:2px 2px 4px;opacity:.7;}
 
   /* CONFIRM */
   .confirm-btn{width:100%;padding:16px;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:3px;border-radius:12px;border:none;background:var(--accent);color:#000;cursor:pointer;transition:all .2s;flex-shrink:0;}
   .confirm-btn:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;}
   .confirm-btn:not(:disabled):active{transform:scale(.98);}
 
-  /* RAW DATA (collapsed) */
-
-  /* MENU MODAL */
-  .mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:100;align-items:flex-end;justify-content:center;}
-  .mo.open{display:flex;animation:fi .2s ease;}
-  .md-sheet{background:var(--surface);border:2px solid var(--border);border-radius:18px 18px 0 0;padding:20px 20px 36px;width:100%;}
-  .md-sheet h2{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:3px;color:var(--accent);margin-bottom:16px;}
-  .sheet-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);}
-  .sheet-lbl{font-size:.72rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
-  .sheet-btn{font-family:'Bebas Neue',sans-serif;font-size:.78rem;letter-spacing:1px;padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;transition:all .15s;}
-  .sheet-btn:active{border-color:var(--accent);color:var(--accent);}
-  .sheet-close{margin-top:14px;width:100%;padding:12px;font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:2px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;}
-
-  /* SUCCESS FLASH */
   .flash{position:fixed;inset:0;background:rgba(0,229,255,.12);pointer-events:none;opacity:0;transition:opacity .15s;z-index:200;}
   .flash.on{opacity:1;}
-
   @keyframes fi{from{opacity:0}to{opacity:1}}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="hbrand"></div>
-  <div id="pid-display" style="position:absolute;left:50%;transform:translateX(-50%);display:none;">
-    <div style="background:var(--card);border:1.5px solid rgba(0,229,255,.45);border-radius:10px;padding:6px 18px;text-align:center;box-shadow:0 0 14px rgba(0,229,255,.15);">
-      <div style="font-size:.5rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:2px;">Product ID</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:5px;color:var(--accent);text-shadow:0 0 12px rgba(0,229,255,.5);line-height:1;" id="pid-value"></div>
+  <div class="h-refresh" onclick="clearScan()">
+    <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4"/></svg>
+  </div>
+
+  <div id="pid-display" style="flex:1;display:none;justify-content:center;">
+    <div class="pid-box">
+      <div class="pid-label">Product ID</div>
+      <div class="pid-val" id="pid-value"></div>
     </div>
   </div>
-  <div class="hmenu" onclick="openMenu()">
-    <div></div><div></div><div></div>
+
+  <div class="h-controls">
+    <div class="h-btn" id="fs-btn" onclick="toggleFullscreen()">
+      <svg id="fs-icon" viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+    </div>
+    <div class="h-btn" onclick="minimizeApp()">
+      <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </div>
   </div>
 </header>
 
-<div class="main" id="main">
+<div class="main">
 
-  <!-- SCANNER -->
-  <div class="scan-card" id="scan-card">
-
-    <!-- READY STATE: tap to scan -->
+  <div class="scan-card">
     <div class="scan-ready" id="scan-ready" onclick="toggleScan()">
       <div class="scan-ready-icon">
-        <div class="sri-corner sri-tl"></div>
-        <div class="sri-corner sri-tr"></div>
-        <div class="sri-corner sri-bl"></div>
-        <div class="sri-corner sri-br"></div>
+        <div class="sri-corner sri-tl"></div><div class="sri-corner sri-tr"></div>
+        <div class="sri-corner sri-bl"></div><div class="sri-corner sri-br"></div>
         <div class="sri-inner">
-          <div class="sri-bar"></div>
-          <div class="sri-bar"></div>
-          <div class="sri-bar sri-wide"></div>
-          <div class="sri-bar"></div>
+          <div class="sri-bar"></div><div class="sri-bar"></div>
+          <div class="sri-bar sri-wide"></div><div class="sri-bar"></div>
           <div class="sri-bar sri-wide"></div>
         </div>
       </div>
       <div class="scan-ready-label">TAP TO SCAN BARCODE</div>
-      
     </div>
 
-    <!-- ACTIVE STATE: live camera -->
     <div class="scan-viewport" id="scan-viewport" style="display:none;" onclick="toggleScan()">
       <video id="video" playsinline muted></video>
+      <canvas id="crop-canvas"></canvas>
       <div class="scan-overlay">
-        <div class="aim-frame">
-          <div class="aim-corner tl"></div>
-          <div class="aim-corner tr"></div>
-          <div class="aim-corner bl"></div>
-          <div class="aim-corner br"></div>
+        <div class="aim-frame" id="aim-frame">
+          <div class="aim-corner tl"></div><div class="aim-corner tr"></div>
+          <div class="aim-corner bl"></div><div class="aim-corner br"></div>
           <div class="scan-line"></div>
         </div>
       </div>
@@ -175,11 +161,17 @@
     </div>
   </div>
 
-  <!-- PARSED RESULTS -->
   <div class="results-card" id="results-card">
     <div class="results-grid">
 
-      <!-- GTIN -->
+      <div class="field-row" id="row-from" style="display:none;">
+        <div class="field-ai">From</div>
+        <div class="field-info">
+          <div class="field-label">From</div>
+          <div class="field-value" id="val-from">—</div>
+        </div>
+      </div>
+
       <div class="field-row" id="row-gtin">
         <div class="field-ai">GTIN</div>
         <div class="field-info">
@@ -187,7 +179,7 @@
           <div class="field-value empty" id="val-gtin">—</div>
         </div>
       </div>
-      <!-- Pack Date -->
+
       <div class="field-row" id="row-date">
         <div class="field-ai">Pack Date</div>
         <div class="field-info">
@@ -195,7 +187,7 @@
           <div class="field-value empty" id="val-date">—</div>
         </div>
       </div>
-      <!-- Weight -->
+
       <div class="field-row" id="row-weight">
         <div class="field-ai">Weight</div>
         <div class="field-info">
@@ -203,7 +195,7 @@
           <div class="field-value empty" id="val-weight">—</div>
         </div>
       </div>
-      <!-- Serial -->
+
       <div class="field-row" id="row-serial">
         <div class="field-ai">Serial</div>
         <div class="field-info">
@@ -211,225 +203,265 @@
           <div class="field-value empty" id="val-serial">—</div>
         </div>
       </div>
-      <!-- Inspection ID (hidden until scan) -->
-      <div class="field-row" id="row-inspect" style="border-color:rgba(0,229,255,.35);background:rgba(0,229,255,.06);display:none;">
-        <div class="field-ai" style="border-color:rgba(0,229,255,.35);color:var(--accent);font-size:.52rem;letter-spacing:.5px;">Inspect ID</div>
+
+      <div class="field-row inspect-row" id="row-inspect">
+        <div class="field-ai" style="border-color:rgba(0,229,255,.35);color:var(--accent);">Inspect ID</div>
         <div class="field-info">
           <div class="field-label">Inspection ID</div>
-          <div class="field-value" id="val-inspect" style="color:var(--accent);cursor:pointer;" onclick="editInspect()">P-47016</div>
+          <div class="field-value empty" id="val-inspect" style="cursor:pointer;" onclick="editInspect()">—</div>
         </div>
-        <div style="font-family:'DM Sans',sans-serif;font-size:.6rem;color:var(--muted);padding-left:4px;cursor:pointer;" onclick="editInspect()">✏</div>
+        <div style="font-size:.6rem;color:var(--muted);padding-left:4px;cursor:pointer;" onclick="editInspect()">✏</div>
       </div>
+
+      <div id="extra-fields"></div>
+
     </div>
   </div>
 
-  <!-- CONFIRM -->
   <button class="confirm-btn" id="confirm-btn" onclick="confirmScan()" disabled>CONFIRM</button>
 
-</div><!-- /main -->
-
-<!-- FLASH -->
-<div class="flash" id="flash"></div>
-
-<!-- MENU SHEET -->
-<div class="mo" id="mo-menu">
-  <div class="md-sheet">
-    <h2>Options</h2>
-    <div class="sheet-row">
-      <span class="sheet-lbl">Full Screen</span>
-      <button class="sheet-btn" id="fs-btn" onclick="toggleFullscreen()">ENTER</button>
-    </div>
-    <div class="sheet-row">
-      <span class="sheet-lbl">Clear Scan</span>
-      <button class="sheet-btn" onclick="clearScan();closeMenu()">CLEAR</button>
-    </div>
-    <div class="sheet-row">
-      <span class="sheet-lbl">Version</span>
-      <span style="font-family:'Bebas Neue',sans-serif;font-size:.72rem;letter-spacing:1px;color:var(--muted);">Box Scanner v1.0</span>
-    </div>
-    <button class="sheet-close" onclick="closeMenu()">CLOSE</button>
-  </div>
 </div>
 
-<script>
-/* ==================== STATE ==================== */
-let scanning = false;
-let codeReader = null;
-let scanData = null;
+<div class="flash" id="flash"></div>
 
-/* ==================== BARCODE PARSER ==================== */
+<script>
+let scanning = false, codeReader = null, scanData = null, animFrame = null;
+
+/* ===== GS1 CATALOGUE ===== */
+const GS1_AI = {
+  '00':  {badge:'SSCC',      name:'Serial Shipping Container', len:18, fixed:true},
+  '01':  {badge:'GTIN',      name:'GTIN',                      len:14, fixed:true},
+  '02':  {badge:'Content',   name:'GTIN of Contents',          len:14, fixed:true},
+  '10':  {badge:'Lot',       name:'Batch / Lot Number',        len:20, fixed:false},
+  '11':  {badge:'Prod Date', name:'Production Date',           len:6,  fixed:true, fmt:'date'},
+  '12':  {badge:'Due Date',  name:'Due Date',                  len:6,  fixed:true, fmt:'date'},
+  '13':  {badge:'Pack Date', name:'Packaging Date',            len:6,  fixed:true, fmt:'date'},
+  '15':  {badge:'Best By',   name:'Best Before Date',          len:6,  fixed:true, fmt:'date'},
+  '17':  {badge:'Exp Date',  name:'Expiration Date',           len:6,  fixed:true, fmt:'date'},
+  '20':  {badge:'Variant',   name:'Product Variant',           len:2,  fixed:true},
+  '21':  {badge:'Serial',    name:'Serial Number',             len:20, fixed:false},
+  '22':  {badge:'CPV',       name:'Consumer Product Variant',  len:20, fixed:false},
+  '30':  {badge:'Count',     name:'Item Count',                len:8,  fixed:false},
+  '37':  {badge:'Units',     name:'Units Contained',           len:8,  fixed:false},
+  '3102':{badge:'Net kg',    name:'Net Weight (kg)',           len:6,  fixed:true, fmt:'w2'},
+  '3202':{badge:'Weight',    name:'Net Weight (lbs)',          len:6,  fixed:true, fmt:'w2'},
+  '3302':{badge:'Gross kg',  name:'Gross Weight (kg)',         len:6,  fixed:true, fmt:'w2'},
+  '400': {badge:'PO #',      name:'Customer PO Number',        len:30, fixed:false},
+  '401': {badge:'Consign',   name:'Consignment Number',        len:30, fixed:false},
+  '402': {badge:'Shipment',  name:'Shipment ID',               len:17, fixed:true},
+  '403': {badge:'Route',     name:'Routing Code',              len:30, fixed:false},
+  '410': {badge:'Ship To',   name:'Ship-To GLN',               len:13, fixed:true},
+  '411': {badge:'Bill To',   name:'Bill-To GLN',               len:13, fixed:true},
+  '412': {badge:'Buy From',  name:'Purchase From GLN',         len:13, fixed:true},
+  '420': {badge:'Postal',    name:'Ship-To Postal Code',       len:20, fixed:false},
+  '421': {badge:'Postal+',   name:'Postal w/ Country',         len:15, fixed:false},
+  '422': {badge:'Origin',    name:'Country of Origin',         len:3,  fixed:true},
+  '7002':{badge:'Meat Cut',  name:'Meat Cut Type',             len:30, fixed:false},
+  '90':  {badge:'Internal',  name:'Internal Use',              len:30, fixed:false},
+  '91':  {badge:'Cust 91',   name:'Company Internal (91)',      len:30, fixed:false},
+  '92':  {badge:'Cust 92',   name:'Company Internal (92)',      len:30, fixed:false},
+};
+
+const PRIMARY_AIS = new Set(['01','13','3202','21']);
+
+/* ===== PARSER ===== */
 function parseGS1(raw) {
-  // Strip AIM identifier ]C1 if present
   let data = raw.startsWith(']C1') ? raw.slice(3) : raw;
+  const SEP = '\x1d';
   const result = {};
   let i = 0;
-
   while (i < data.length) {
-    // Try 4-char AI first (e.g. 3202), then 3, then 2
-    const ai4 = data.substr(i, 4);
-    const ai3 = data.substr(i, 3);
-    const ai2 = data.substr(i, 2);
-
-    if (ai4 === '3202') {
-      result.ai3202 = data.substr(i + 4, 6);
-      i += 10;
-    } else if (ai2 === '01') {
-      result.ai01 = data.substr(i + 2, 14);
-      i += 16;
-    } else if (ai2 === '13') {
-      result.ai13 = data.substr(i + 2, 6);
-      i += 8;
-    } else if (ai2 === '21') {
-      result.ai21 = data.substr(i + 2);
+    if (data[i] === SEP) { i++; continue; }
+    let matched = false;
+    for (const al of [4,3,2]) {
+      const ai = data.substr(i, al);
+      if (!GS1_AI[ai]) continue;
+      const def = GS1_AI[ai];
+      i += al;
+      if (def.fixed) {
+        result[ai] = data.substr(i, def.len);
+        i += def.len;
+      } else {
+        const end = data.indexOf(SEP, i);
+        result[ai] = end === -1 ? data.substr(i) : data.substr(i, end - i);
+        i = end === -1 ? data.length : end;
+      }
+      matched = true;
       break;
-    } else {
-      i++;
     }
+    if (!matched) i++;
   }
   return result;
 }
 
-function formatDate(yymmdd) {
-  if (!yymmdd || yymmdd.length !== 6) return yymmdd;
-  const yy = yymmdd.substr(0, 2);
-  const mm = yymmdd.substr(2, 2);
-  const dd = yymmdd.substr(4, 2);
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const monthName = months[parseInt(mm, 10) - 1] || mm;
-  return `${monthName} ${dd}, 20${yy}`;
+/* ===== FORMATTERS ===== */
+function formatDate(s) {
+  if (!s || s.length !== 6) return s;
+  const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${mo[parseInt(s.substr(2,2),10)-1]||s.substr(2,2)} ${s.substr(4,2)}, 20${s.substr(0,2)}`;
+}
+function formatW2(s) {
+  return s ? (parseInt(s,10)/100).toFixed(2)+' lbs' : s;
+}
+function applyFmt(v, fmt) {
+  if (fmt==='date') return formatDate(v);
+  if (fmt==='w2')   return formatW2(v);
+  return v;
+}
+function extractPID(gtin) {
+  return (gtin && gtin.length >= 13) ? gtin.substr(8,5) : null;
+}
+function gtinHTML(gtin) {
+  if (!gtin || gtin.length < 14) return gtin||'';
+  return gtin.substr(0,8)
+    + `<span style="color:var(--accent);text-shadow:0 0 8px rgba(0,229,255,.6);">${gtin.substr(8,5)}</span>`
+    + gtin.substr(13);
 }
 
-function formatWeight(raw) {
-  if (!raw) return raw;
-  // 3202 = 2 implied decimal places → divide by 100
-  const num = parseInt(raw, 10) / 100;
-  return num.toFixed(2) + ' lbs';
-}
-
-function extractProductId(gtin) {
-  // Product ID is digits 8–12 (0-indexed) of the 14-digit GTIN
-  if (!gtin || gtin.length < 13) return null;
-  return gtin.substr(8, 5);
-}
-
-/* ==================== DISPLAY PARSED DATA ==================== */
+/* ===== DISPLAY ===== */
 function displayData(parsed, raw) {
-  scanData = { parsed, raw };
+  scanData = {parsed, raw};
 
-  const gtin = parsed.ai01 || '';
-  const pid  = extractProductId(gtin);
-  const date = parsed.ai13 || '';
-  const wt   = parsed.ai3202 || '';
-  const ser  = parsed.ai21 || '';
+  const gtin = parsed['01']||'', date = parsed['13']||'',
+        wt   = parsed['3202']||'', ser = parsed['21']||'';
+  const pid  = extractPID(gtin);
 
-  function setField(id, rowId, value, formatter) {
-    const el = document.getElementById(id);
-    const row = document.getElementById(rowId);
-    const displayVal = formatter ? formatter(value) : value;
-    if (value) {
-      el.textContent = displayVal;
-      el.classList.remove('empty');
-      row.classList.add('filled');
-    } else {
-      el.textContent = '—';
-      el.classList.add('empty');
-    }
+  // Product ID header — always clear first, then set if exists
+  const pidDisp = document.getElementById('pid-display');
+  const pidVal  = document.getElementById('pid-value');
+  pidDisp.style.display = 'none';
+  pidVal.textContent = '';
+  if (pid) {
+    pidVal.textContent = pid;
+    pidDisp.style.display = 'flex';
   }
 
-  // Product ID
-  // Show product ID in header
-  const pidDisplay = document.getElementById('pid-display');
-  const pidValue = document.getElementById('pid-value');
-  if (pid && pidDisplay) {
-    pidValue.textContent = pid;
-    pidDisplay.style.display = 'block';
+  // From field
+  const fromRow = document.getElementById('row-from');
+  const fromVal = document.getElementById('val-from');
+  fromRow.style.display = 'flex';
+  fromRow.classList.add('filled');
+  fromVal.textContent = 'The Best Dressed Chicken';
+  fromVal.classList.remove('empty');
+
+  // GTIN with highlighted PID digits
+  const gtinEl = document.getElementById('val-gtin');
+  if (gtin) {
+    gtinEl.innerHTML = gtinHTML(gtin);
+    gtinEl.classList.remove('empty');
+    document.getElementById('row-gtin').classList.add('filled');
+  } else {
+    gtinEl.textContent = '—'; gtinEl.classList.add('empty');
+    document.getElementById('row-gtin').classList.remove('filled');
   }
 
-  setField('val-gtin', 'row-gtin', gtin);
-  setField('val-date', 'row-date', date, formatDate);
-  setField('val-weight', 'row-weight', wt, formatWeight);
+  setField('val-date',   'row-date',   date, formatDate);
+  setField('val-weight', 'row-weight', wt,   formatW2);
   setField('val-serial', 'row-serial', ser);
 
-  // Raw data
+  // Inspection ID — show active style once scan happens
+  const inspEl = document.getElementById('val-inspect');
+  if (inspEl.textContent === '—') {
+    // leave blank, user can tap to enter
+  }
+  inspEl.classList.remove('empty');
 
-  // Card state
+  renderExtras(parsed);
+
   document.getElementById('results-card').classList.add('has-data');
-  // Show inspection ID row
-  document.getElementById('row-inspect').style.display = 'flex';
-  // Enable confirm if we have at least GTIN and date
   document.getElementById('confirm-btn').disabled = !(gtin && date);
-
-  // Flash
   flashScreen();
 }
 
-/* ==================== SCANNER ==================== */
+function setField(id, rowId, val, fmt) {
+  const el = document.getElementById(id);
+  const row = document.getElementById(rowId);
+  if (val) {
+    el.textContent = fmt ? fmt(val) : val;
+    el.classList.remove('empty');
+    row.classList.add('filled');
+  } else {
+    el.textContent = '—';
+    el.classList.add('empty');
+    row.classList.remove('filled');
+  }
+}
+
+function renderExtras(parsed) {
+  const box = document.getElementById('extra-fields');
+  box.innerHTML = '';
+  const extras = Object.keys(parsed).filter(ai => !PRIMARY_AIS.has(ai));
+  if (!extras.length) return;
+  const lbl = document.createElement('div');
+  lbl.className = 'extra-label';
+  lbl.textContent = 'Additional Fields';
+  box.appendChild(lbl);
+  extras.forEach(ai => {
+    const def = GS1_AI[ai];
+    const badge = def ? def.badge : `AI ${ai}`;
+    const name  = def ? def.name  : `GS1 AI (${ai})`;
+    const dval  = def ? applyFmt(parsed[ai], def.fmt) : parsed[ai];
+    const row   = document.createElement('div');
+    row.className = 'field-row filled';
+    row.innerHTML = `<div class="field-ai">${badge}</div><div class="field-info"><div class="field-label">${name}</div><div class="field-value">${dval}</div></div>`;
+    box.appendChild(row);
+  });
+}
+
+/* ===== SCAN REGION CROP ===== */
+function getCropCanvas() {
+  const vp  = document.getElementById('scan-viewport');
+  const vid = document.getElementById('video');
+  const cvs = document.getElementById('crop-canvas');
+  const vw  = vp.clientWidth, vh = vp.clientHeight;
+  const fW  = vw * 0.92, fH = vh * 0.72;
+  const fX  = (vw - fW) / 2, fY = (vh - fH) / 2;
+  const sX  = vid.videoWidth / vw, sY = vid.videoHeight / vh;
+  cvs.width  = fW * sX || 1;
+  cvs.height = fH * sY || 1;
+  cvs.getContext('2d').drawImage(vid, fX*sX, fY*sY, fW*sX, fH*sY, 0, 0, cvs.width, cvs.height);
+  return cvs;
+}
+
+/* ===== SCANNER ===== */
 function showReady() {
   document.getElementById('scan-ready').style.display = 'flex';
   document.getElementById('scan-viewport').style.display = 'none';
 }
-
 function showViewport() {
   document.getElementById('scan-ready').style.display = 'none';
   document.getElementById('scan-viewport').style.display = 'block';
 }
-
 function toggleScan() {
-  if (scanning) {
-    stopScan();
-    showReady();
-    setStatus('Tap to scan a barcode', '');
-  } else {
-    startScan();
-  }
+  scanning ? (stopScan(), showReady(), setStatus('Tap to scan a barcode','')) : startScan();
 }
-
-function cancelScan() {
-  stopScan();
-  showReady();
-  setStatus('Tap to scan a barcode', '');
-}
-
-let animFrame = null;
 
 async function startScan() {
-  setStatus('Starting camera…', '');
+  setStatus('Starting camera…','');
   showViewport();
   scanning = true;
-
   try {
-    const videoEl = document.getElementById('video');
-
-    // Start back camera stream
+    const vid = document.getElementById('video');
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        facingMode: { ideal: 'environment' },
-        width: { ideal: 1920 },
-        height: { ideal: 1080 }
-      }
+      video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}}
     });
-    videoEl.srcObject = stream;
-    await videoEl.play();
+    vid.srcObject = stream;
+    await vid.play();
+    setStatus('Aim at barcode…','active');
 
-    setStatus('Aim at barcode…', 'active');
-
-    // Use native BarcodeDetector if available (Android Chrome) — best for Code 128
     if ('BarcodeDetector' in window) {
-      const detector = new BarcodeDetector({
-        formats: ['code_128', 'ean_13', 'ean_8', 'upc_a', 'upc_e', 'itf', 'pdf417']
-      });
+      const det = new BarcodeDetector({formats:['code_128','ean_13','ean_8','upc_a','upc_e','itf','pdf417']});
       const loop = async () => {
         if (!scanning) return;
         try {
-          const barcodes = await detector.detect(videoEl);
-          if (barcodes.length > 0) {
-            const raw = barcodes[0].rawValue;
-            const parsed = parseGS1(raw);
-            if (parsed.ai01 || parsed.ai13 || parsed.ai3202 || parsed.ai21) {
-              stopScan();
-              showReady();
-              displayData(parsed, raw);
-              setStatus('✓ Scanned — tap to scan again', 'success');
+          const src = vid.videoWidth > 0 ? getCropCanvas() : vid;
+          const bc  = await det.detect(src);
+          if (bc.length) {
+            const parsed = parseGS1(bc[0].rawValue);
+            if (Object.keys(parsed).length) {
+              stopScan(); showReady();
+              displayData(parsed, bc[0].rawValue);
+              setStatus('✓ Scanned — tap to scan again','success');
               return;
             }
           }
@@ -438,108 +470,91 @@ async function startScan() {
       };
       animFrame = requestAnimationFrame(loop);
     } else {
-      // Fallback: ZXing via dynamic import
-      setStatus('Loading decoder…', 'active');
-      const script = document.createElement('script');
-      script.src = 'https://unpkg.com/@zxing/library@0.19.1/umd/index.min.js';
-      script.onload = () => {
-        const ZXing = window.ZXing;
-        const hints = new Map();
-        hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, [ZXing.BarcodeFormat.CODE_128, ZXing.BarcodeFormat.EAN_13]);
-        hints.set(ZXing.DecodeHintType.TRY_HARDER, true);
-        codeReader = new ZXing.BrowserMultiFormatReader(hints, 250);
-        codeReader.decodeFromStream(videoEl.srcObject, videoEl, (result, err) => {
-          if (result && scanning) {
-            const raw = result.getText();
-            const parsed = parseGS1(raw);
-            if (parsed.ai01 || parsed.ai13 || parsed.ai3202 || parsed.ai21) {
-              stopScan();
-              showReady();
-              displayData(parsed, raw);
-              setStatus('✓ Scanned — tap to scan again', 'success');
+      setStatus('Loading decoder…','active');
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/@zxing/library@0.19.1/umd/index.min.js';
+      s.onload = () => {
+        const Z = window.ZXing, h = new Map();
+        h.set(Z.DecodeHintType.POSSIBLE_FORMATS,[Z.BarcodeFormat.CODE_128,Z.BarcodeFormat.EAN_13]);
+        h.set(Z.DecodeHintType.TRY_HARDER,true);
+        codeReader = new Z.BrowserMultiFormatReader(h,250);
+        codeReader.decodeFromStream(vid.srcObject, vid, (res) => {
+          if (res && scanning) {
+            const parsed = parseGS1(res.getText());
+            if (Object.keys(parsed).length) {
+              stopScan(); showReady();
+              displayData(parsed, res.getText());
+              setStatus('✓ Scanned — tap to scan again','success');
             }
           }
         });
-        setStatus('Aim at barcode…', 'active');
+        setStatus('Aim at barcode…','active');
       };
-      document.head.appendChild(script);
+      document.head.appendChild(s);
     }
-
-  } catch (e) {
-    stopScan();
-    showReady();
-    setStatus('Camera error — check permissions', 'error');
+  } catch(e) {
+    stopScan(); showReady();
+    setStatus('Camera error — check permissions','error');
   }
 }
 
 function stopScan() {
   scanning = false;
   if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
-  if (codeReader) {
-    try { codeReader.reset(); } catch(e) {}
-    codeReader = null;
-  }
-  const videoEl = document.getElementById('video');
-  if (videoEl && videoEl.srcObject) {
-    videoEl.srcObject.getTracks().forEach(t => t.stop());
-    videoEl.srcObject = null;
-  }
+  if (codeReader) { try{codeReader.reset();}catch(e){} codeReader = null; }
+  const vid = document.getElementById('video');
+  if (vid && vid.srcObject) { vid.srcObject.getTracks().forEach(t=>t.stop()); vid.srcObject = null; }
 }
 
-function setStatus(text, cls) {
+function setStatus(t,c) {
   const el = document.getElementById('scan-status');
-  el.textContent = text;
-  el.className = 'scan-status' + (cls ? ' ' + cls : '');
+  el.textContent = t;
+  el.className = 'scan-status'+(c?' '+c:'');
 }
 
+/* ===== CLEAR ===== */
 function clearScan() {
-  stopScan();
-  scanData = null;
-  const fields = ['val-gtin','val-date','val-weight','val-serial'];
-  const pidDisp = document.getElementById('pid-display');
-  if (pidDisp) pidDisp.style.display = 'none';
-  const rows   = ['row-gtin','row-date','row-weight','row-serial'];
-  const empties = ['—','—','—','—'];
-  fields.forEach((id, i) => {
-    const el = document.getElementById(id);
-    el.textContent = empties[i];
-    el.classList.add('empty');
-    document.getElementById(rows[i]).classList.remove('filled');
+  stopScan(); scanData = null;
+  document.getElementById('pid-display').style.display = 'none';
+  document.getElementById('pid-value').textContent = '';
+  const fromRow = document.getElementById('row-from');
+  fromRow.style.display = 'none'; fromRow.classList.remove('filled');
+  document.getElementById('val-from').textContent = '—';
+  ['val-gtin','val-date','val-weight','val-serial'].forEach(id => {
+    const el = document.getElementById(id); el.textContent = '—'; el.classList.add('empty');
   });
+  ['row-gtin','row-date','row-weight','row-serial'].forEach(id =>
+    document.getElementById(id).classList.remove('filled'));
+  const ins = document.getElementById('val-inspect');
+  ins.textContent = '—'; ins.classList.add('empty');
+  document.getElementById('extra-fields').innerHTML = '';
   document.getElementById('results-card').classList.remove('has-data');
-  document.getElementById('row-inspect').style.display = 'none';
-  document.getElementById('results-badge').classList.remove('show');
-  showReady();
-  setStatus('Tap to scan a barcode', '');
   document.getElementById('confirm-btn').disabled = true;
-  if (rawOpen) toggleRaw();
+  showReady();
+  setStatus('Tap to scan a barcode','');
 }
 
-/* ==================== RAW TOGGLE ==================== */
-
-/* ==================== INSPECT ==================== */
+/* ===== INSPECT ===== */
 function editInspect() {
-  const current = document.getElementById('val-inspect').textContent.trim();
-  const val = prompt('Inspection ID:', current);
-  if (val && val.trim()) {
-    document.getElementById('val-inspect').textContent = val.trim();
+  const cur = document.getElementById('val-inspect').textContent.trim();
+  const v   = prompt('Inspection ID:', cur === '—' ? '' : cur);
+  if (v !== null && v.trim()) {
+    const el = document.getElementById('val-inspect');
+    el.textContent = v.trim();
+    el.classList.remove('empty');
   }
 }
 
-/* ==================== CONFIRM ==================== */
+/* ===== CONFIRM ===== */
 function confirmScan() {
   if (!scanData) return;
-  const inspectId = document.getElementById('val-inspect').textContent.trim();
   const payload = {
-    productId: extractProductId(scanData.parsed.ai01 || ''),
-    gtin: scanData.parsed.ai01,
-    packDate: scanData.parsed.ai13,
-    weight: scanData.parsed.ai3202,
-    serial: scanData.parsed.ai21,
-    inspectionId: inspectId,
+    productId: extractPID(scanData.parsed['01']||''),
+    allFields: scanData.parsed,
+    inspectionId: document.getElementById('val-inspect').textContent.trim(),
     confirmedAt: new Date().toISOString()
   };
-  // TODO: send to Power Automate / API
+  console.log('Payload:', payload);
   flashScreen();
   showToast('Order confirmed!');
 }
@@ -552,34 +567,34 @@ function showToast(msg) {
     z-index:300;animation:fi .2s ease;white-space:nowrap;`;
   t.textContent = msg;
   document.body.appendChild(t);
-  setTimeout(() => t.remove(), 2500);
+  setTimeout(()=>t.remove(), 2500);
 }
 
-/* ==================== FLASH ==================== */
 function flashScreen() {
   const f = document.getElementById('flash');
   f.classList.add('on');
-  setTimeout(() => f.classList.remove('on'), 200);
+  setTimeout(()=>f.classList.remove('on'), 200);
 }
 
-/* ==================== MENU ==================== */
-function openMenu() { document.getElementById('mo-menu').classList.add('open'); }
-function closeMenu() { document.getElementById('mo-menu').classList.remove('open'); }
-
+/* ===== WINDOW CONTROLS ===== */
 function toggleFullscreen() {
-  closeMenu();
   if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().catch(() => {});
+    document.documentElement.requestFullscreen().catch(()=>{});
   } else {
-    document.exitFullscreen().catch(() => {});
+    document.exitFullscreen().catch(()=>{});
   }
 }
-
 document.addEventListener('fullscreenchange', () => {
-  const btn = document.getElementById('fs-btn');
-  if (btn) btn.textContent = document.fullscreenElement ? 'EXIT' : 'ENTER';
+  const ico = document.getElementById('fs-icon');
+  if (!ico) return;
+  ico.innerHTML = document.fullscreenElement
+    ? `<polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/>`
+    : `<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>`;
 });
-
+function minimizeApp() {
+  if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+  try { window.blur(); } catch(e) {}
+}
 </script>
 </body>
 </html>

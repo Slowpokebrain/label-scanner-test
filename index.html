@@ -398,48 +398,52 @@ function cancelScan() {
 }
 
 async function startScan() {
-  const status = document.getElementById('scan-status');
   setStatus('Starting camera…', '');
+  showViewport();
+  scanning = true;
 
   try {
-    showViewport();
-    scanning = true;
-
     const ZXing = window.ZXing;
-    codeReader = new ZXing.BrowserMultiFormatReader();
+
+    // Pass hints to constructor — Code 128 priority + try harder
+    const hints = new Map();
+    hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, [
+      ZXing.BarcodeFormat.CODE_128,
+      ZXing.BarcodeFormat.EAN_13,
+      ZXing.BarcodeFormat.EAN_8,
+    ]);
+    hints.set(ZXing.DecodeHintType.TRY_HARDER, true);
+
+    codeReader = new ZXing.BrowserMultiFormatReader(hints, 300);
 
     const videoEl = document.getElementById('video');
 
-    // Use environment-facing (back) camera
-    const hints = new Map();
-    hints.set(ZXing.DecodeHintType.TRY_HARDER, true);
-    codeReader.hints = hints;
-
-    const constraints = { video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } } };
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    videoEl.srcObject = stream;
-    await videoEl.play();
-
-    // Adjust viewport height to match video
-    const vp = document.getElementById('scan-viewport');
-    vp.style.height = (vp.offsetWidth * 9/16) + 'px';
+    // decodeFromConstraints manages the stream internally — no manual getUserMedia
+    codeReader.decodeFromConstraints(
+      {
+        video: {
+          facingMode: { ideal: 'environment' },
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }
+      },
+      videoEl,
+      (result, err) => {
+        if (result && scanning) {
+          const raw = result.getText();
+          const parsed = parseGS1(raw);
+          if (parsed.ai01 || parsed.ai13 || parsed.ai3202 || parsed.ai21) {
+            stopScan();
+            showReady();
+            displayData(parsed, raw);
+            setStatus('✓ Scanned — tap to scan again', 'success');
+          }
+        }
+        // err fires on every frame that has no barcode — that's normal, ignore it
+      }
+    );
 
     setStatus('Aim at barcode…', 'active');
-
-    codeReader._stream = stream;
-
-    await codeReader.decodeFromStream(stream, videoEl, (result, err) => {
-      if (result && scanning) {
-        const raw = result.getText();
-        const parsed = parseGS1(raw);
-        if (parsed.ai01 || parsed.ai13 || parsed.ai3202 || parsed.ai21) {
-          stopScan();
-          showReady();
-          displayData(parsed, raw);
-          setStatus('✓ Scanned — tap to scan again', 'success');
-        }
-      }
-    });
 
   } catch (e) {
     stopScan();
@@ -449,17 +453,17 @@ async function startScan() {
 }
 
 function stopScan() {
+  scanning = false;
   if (codeReader) {
-    try {
-      if (codeReader._stream) {
-        codeReader._stream.getTracks().forEach(t => t.stop());
-        codeReader._stream = null;
-      }
-      codeReader.reset();
-    } catch(e){}
+    try { codeReader.reset(); } catch(e) {}
     codeReader = null;
   }
-  scanning = false;
+  // Always kill any lingering video tracks
+  const videoEl = document.getElementById('video');
+  if (videoEl && videoEl.srcObject) {
+    videoEl.srcObject.getTracks().forEach(t => t.stop());
+    videoEl.srcObject = null;
+  }
 }
 
 function setStatus(text, cls) {

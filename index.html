@@ -13,7 +13,7 @@
   :root {
     --bg:#0f1117; --surface:#1a1d27; --card:#22263a;
     --accent:#00e5ff; --accent-h:#40eeff;
-    --green:#4caf82; --red:#e05c5c;
+    --green:#4caf82;
     --text:#e8eaf6; --muted:#7b7f9e; --border:#2e3250;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -37,7 +37,7 @@
   .h-win-btn svg{width:15px;height:15px;stroke:var(--accent);fill:none;stroke-width:2;
                  stroke-linecap:round;stroke-linejoin:round;}
 
-  /* SCROLL AREA */
+  /* CONTENT AREA */
   .content{flex:1;display:flex;flex-direction:column;padding:12px 14px;gap:12px;min-height:0;overflow:hidden;}
   .results-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;overflow-y:auto;transition:border-color .3s;flex:1;min-height:0;}
 
@@ -124,7 +124,7 @@
   <div class="h-refresh" onclick="clearScan()">
     <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4"/></svg>
   </div>
-  <div class="h-win-btn" id="win-btn" onclick="toggleFullscreen()">
+  <div class="h-win-btn" onclick="toggleFullscreen()">
     <svg id="win-icon" viewBox="0 0 24 24">
       <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
       <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
@@ -170,14 +170,6 @@
   <!-- FIELD RESULTS -->
   <div class="results-card" id="results-card">
     <div class="results-grid">
-
-      <div class="field-row" id="row-from" style="display:none;">
-        <div class="field-info">
-          <div class="field-label">Shipped From</div>
-          <div class="field-value empty" id="val-from" onclick="editFrom()" style="cursor:pointer;">—</div>
-        </div>
-        <div style="font-size:.65rem;color:var(--muted);cursor:pointer;padding-left:4px;flex-shrink:0;" onclick="editFrom()">✏</div>
-      </div>
 
       <div class="field-row" id="row-gtin">
         <div class="field-info">
@@ -232,31 +224,31 @@ let scanning = false, codeReader = null, scanData = null, animFrame = null;
 
 /* ===== GS1 CATALOGUE ===== */
 const GS1_AI = {
-  '00':  {badge:'SSCC',      name:'Serial Shipping Container', len:18, fixed:true},
-  '01':  {badge:'GTIN',      name:'GTIN / Product ID',         len:14, fixed:true},
-  '02':  {badge:'Content',   name:'GTIN of Contents',          len:14, fixed:true},
-  '10':  {badge:'Lot',       name:'Batch / Lot Number',        len:20, fixed:false},
-  '11':  {badge:'Prod Date', name:'Production Date',           len:6,  fixed:true, fmt:'date'},
-  '12':  {badge:'Due Date',  name:'Due Date',                  len:6,  fixed:true, fmt:'date'},
-  '13':  {badge:'Pack Date', name:'Packaging Date',            len:6,  fixed:true, fmt:'date'},
-  '15':  {badge:'Best By',   name:'Best Before Date',          len:6,  fixed:true, fmt:'date'},
-  '17':  {badge:'Exp Date',  name:'Expiration Date',           len:6,  fixed:true, fmt:'date'},
-  '20':  {badge:'Variant',   name:'Product Variant',           len:2,  fixed:true},
-  '21':  {badge:'Serial',    name:'Serial Number',             len:20, fixed:false},
-  '22':  {badge:'CPV',       name:'Consumer Product Variant',  len:20, fixed:false},
-  '30':  {badge:'Count',     name:'Item Count',                len:8,  fixed:false},
-  '37':  {badge:'Units',     name:'Units Contained',           len:8,  fixed:false},
-  '3102':{badge:'Net kg',    name:'Net Weight (kg)',           len:6,  fixed:true, fmt:'w2'},
-  '3202':{badge:'Weight',    name:'Net Weight (lbs)',          len:6,  fixed:true, fmt:'w2'},
-  '3302':{badge:'Gross kg',  name:'Gross Weight (kg)',         len:6,  fixed:true, fmt:'w2'},
-  '400': {badge:'PO #',      name:'Customer PO Number',        len:30, fixed:false},
-  '401': {badge:'Consign',   name:'Consignment Number',        len:30, fixed:false},
-  '402': {badge:'Shipment',  name:'Shipment ID',               len:17, fixed:true},
-  '410': {badge:'Ship To',   name:'Ship-To GLN',               len:13, fixed:true},
-  '420': {badge:'Postal',    name:'Ship-To Postal Code',       len:20, fixed:false},
-  '422': {badge:'Origin',    name:'Country of Origin',         len:3,  fixed:true},
-  '7002':{badge:'Meat Cut',  name:'Meat Cut Type',             len:30, fixed:false},
-  '90':  {badge:'Internal',  name:'Internal Use',              len:30, fixed:false},
+  '00':  {name:'Serial Shipping Container', len:18, fixed:true},
+  '01':  {name:'GTIN / Product ID',         len:14, fixed:true},
+  '02':  {name:'GTIN of Contents',          len:14, fixed:true},
+  '10':  {name:'Batch / Lot Number',        len:20, fixed:false},
+  '11':  {name:'Production Date',           len:6,  fixed:true, fmt:'date'},
+  '12':  {name:'Due Date',                  len:6,  fixed:true, fmt:'date'},
+  '13':  {name:'Packaging Date',            len:6,  fixed:true, fmt:'date'},
+  '15':  {name:'Best Before Date',          len:6,  fixed:true, fmt:'date'},
+  '17':  {name:'Expiration Date',           len:6,  fixed:true, fmt:'date'},
+  '20':  {name:'Product Variant',           len:2,  fixed:true},
+  '21':  {name:'Serial Number',             len:20, fixed:false},
+  '22':  {name:'Consumer Product Variant',  len:20, fixed:false},
+  '30':  {name:'Item Count',                len:8,  fixed:false},
+  '37':  {name:'Units Contained',           len:8,  fixed:false},
+  '3102':{name:'Net Weight (kg)',           len:6,  fixed:true, fmt:'w2'},
+  '3202':{name:'Net Weight (lbs)',          len:6,  fixed:true, fmt:'w2'},
+  '3302':{name:'Gross Weight (kg)',         len:6,  fixed:true, fmt:'w2'},
+  '400': {name:'Customer PO Number',        len:30, fixed:false},
+  '401': {name:'Consignment Number',        len:30, fixed:false},
+  '402': {name:'Shipment ID',               len:17, fixed:true},
+  '410': {name:'Ship-To GLN',               len:13, fixed:true},
+  '420': {name:'Ship-To Postal Code',       len:20, fixed:false},
+  '422': {name:'Country of Origin',         len:3,  fixed:true},
+  '7002':{name:'Meat Cut Type',             len:30, fixed:false},
+  '90':  {name:'Internal Use',              len:30, fixed:false},
 };
 const PRIMARY_AIS = new Set(['01','13','3202','21']);
 
@@ -325,16 +317,6 @@ function displayData(parsed, raw) {
     pidCard.style.display = 'none';
     pidVal.textContent = '';
   }
-
-  // Shipped From field
-  const fromRow = document.getElementById('row-from');
-  const fromVal = document.getElementById('val-from');
-  if (fromVal.classList.contains('empty') || fromVal.textContent === '—') {
-    fromVal.textContent = 'The Best Dressed Chicken';
-    fromVal.classList.remove('empty');
-  }
-  fromRow.style.display = 'flex';
-  fromRow.classList.add('filled');
 
   // GTIN
   const gtinEl = document.getElementById('val-gtin');
@@ -452,9 +434,6 @@ function clearScan(){
   stopScan(); scanData=null;
   document.getElementById('pid-card').style.display='none';
   document.getElementById('pid-value').textContent='';
-  const fr=document.getElementById('row-from'),fv=document.getElementById('val-from');
-  fr.style.display='none'; fr.classList.remove('filled');
-  fv.textContent='—'; fv.classList.add('empty');
   ['val-gtin','val-date','val-weight','val-serial'].forEach(id=>{
     const el=document.getElementById(id);el.textContent='—';el.classList.add('empty');
   });
@@ -466,11 +445,6 @@ function clearScan(){
 }
 
 /* ===== EDIT FIELDS ===== */
-function editFrom(){
-  const cur=document.getElementById('val-from').textContent.trim();
-  const v=prompt('Shipped From:',cur==='—'?'':cur);
-  if(v!==null&&v.trim()){const el=document.getElementById('val-from');el.textContent=v.trim();el.classList.remove('empty');}
-}
 function editInspect(){
   const cur=document.getElementById('val-inspect').textContent.trim();
   const v=prompt('Inspection ID:',cur);
@@ -495,14 +469,7 @@ function toggleFullscreen(){
   if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>{});}
   else{document.exitFullscreen().catch(()=>{});}
 }
-document.addEventListener('fullscreenchange',()=>{
-  const ico=document.getElementById('win-icon');if(!ico)return;
-  ico.innerHTML=document.fullscreenElement
-    ?`<polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/>`
-    :`<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>`;
-});
-
-/* ===== HEIGHT FIX — always match real viewport ===== */
+/* ===== HEIGHT FIX ===== */
 function fixHeight() {
   document.body.style.height = window.innerHeight + 'px';
 }
@@ -510,6 +477,11 @@ fixHeight();
 window.addEventListener('resize', fixHeight);
 document.addEventListener('fullscreenchange', () => {
   setTimeout(fixHeight, 50);
+  const ico = document.getElementById('win-icon');
+  if (!ico) return;
+  ico.innerHTML = document.fullscreenElement
+    ? `<polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/>`
+    : `<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>`;
 });
 </script>
 </body>

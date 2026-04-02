@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0f1117">
 <title>Box Scanner</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap');
   :root {
     --bg:#0f1117; --surface:#1a1d27; --card:#22263a;
     --accent:#00e5ff; --accent-h:#40eeff;
@@ -18,7 +18,7 @@
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{height:100%;overflow:hidden;}
-  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;height:100dvh;}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;display:flex;flex-direction:column;height:100dvh;}
 
   /* HEADER */
   header{background:var(--surface);border-bottom:2px solid var(--border);padding:8px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:8px;}
@@ -27,18 +27,17 @@
   .h-refresh svg{width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
   #pid-display{flex:1;justify-content:center;display:none;}
   .pid-box{background:var(--card);border:1.5px solid rgba(0,229,255,.45);border-radius:10px;padding:5px 16px;text-align:center;box-shadow:0 0 14px rgba(0,229,255,.15);}
-  .pid-label{font-size:.48rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:1px;}
+  .pid-label{font-size:.48rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:1px;}
   .pid-val{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:5px;color:var(--accent);text-shadow:0 0 12px rgba(0,229,255,.5);line-height:1;}
-  /* Single toggle button top right */
   .h-win-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;flex-shrink:0;}
   .h-win-btn:active{border-color:var(--accent);}
   .h-win-btn svg{width:15px;height:15px;stroke:var(--muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 
-  /* MAIN */
-  .main{flex:1;overflow-y:auto;padding:12px 14px 20px;display:flex;flex-direction:column;gap:12px;}
+  /* SCROLL AREA */
+  .scroll-area{flex:1;overflow-y:auto;padding:12px 14px 12px;display:flex;flex-direction:column;gap:12px;}
 
   /* SCANNER */
-  .scan-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;overflow:hidden;}
+  .scan-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;overflow:hidden;flex-shrink:0;}
   .scan-ready{background:var(--card);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:18px 20px;user-select:none;transition:background .15s;min-height:110px;}
   .scan-ready:active{background:#1e2235;}
   .scan-ready-icon{position:relative;width:100px;height:60px;}
@@ -48,7 +47,7 @@
   .sri-bl{bottom:0;left:0;border-width:0 0 3px 3px;}
   .sri-br{bottom:0;right:0;border-width:0 3px 3px 0;}
   .sri-inner{position:absolute;inset:10px 12px;display:flex;align-items:stretch;gap:4px;}
-  .sri-bar{flex:1;background:rgba(0,229,255,.5);border-radius:1px;}
+  .sri-bar{flex:1;background:var(--accent);border-radius:1px;}
   .sri-wide{flex:2;}
   .scan-ready-label{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:3px;color:var(--accent);text-shadow:0 0 12px rgba(0,229,255,.4);}
 
@@ -66,36 +65,25 @@
   .scan-line{position:absolute;left:2%;right:2%;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:scan-line 1.8s ease-in-out infinite;}
   @keyframes aim-pulse{0%,100%{border-color:var(--accent);box-shadow:0 0 0 1200px rgba(0,0,0,.5),0 0 12px rgba(0,229,255,.3);}50%{border-color:var(--accent-h);box-shadow:0 0 0 1200px rgba(0,0,0,.5),0 0 22px rgba(0,229,255,.6);}}
   @keyframes scan-line{0%{top:15%;opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{top:85%;opacity:0;}}
-  .scan-footer{padding:5px 14px 7px;text-align:center;}
-  .scan-status{font-size:.62rem;color:var(--muted);letter-spacing:.5px;}
-  .scan-status.active{color:var(--accent);}
-  .scan-status.success{color:var(--green);}
-  .scan-status.error{color:var(--red);}
 
   /* RESULTS */
   .results-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .3s;}
   .results-card.has-data{border-color:rgba(0,229,255,.35);}
   .results-grid{padding:12px 14px;display:flex;flex-direction:column;gap:8px;}
 
-  .field-row{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--card);border-radius:10px;border:1px solid var(--border);transition:border-color .2s;}
+  .field-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--card);border-radius:10px;border:1px solid var(--border);transition:border-color .2s;}
   .field-row.filled{border-color:rgba(0,229,255,.2);}
-  .field-ai{font-family:'Bebas Neue',sans-serif;font-size:.58rem;letter-spacing:.8px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:2px 7px;white-space:nowrap;flex-shrink:0;min-width:62px;text-align:center;}
   .field-info{flex:1;min-width:0;}
-  .field-label{font-size:.56rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);line-height:1;}
-  /* Human-readable font, white */
-  .field-value{font-family:'DM Sans',sans-serif;font-weight:600;font-size:.95rem;color:#fff;line-height:1.3;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .field-value.empty{color:var(--border);font-weight:400;font-size:.8rem;}
+  /* Label = theme accent color */
+  .field-label{font-size:.6rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent);line-height:1;font-weight:500;}
+  /* Value = Inter, white */
+  .field-value{font-family:'Inter',sans-serif;font-weight:600;font-size:.95rem;color:#fff;line-height:1.3;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .field-value.empty{color:var(--border);font-weight:400;font-size:.82rem;}
   .gtin-pid{color:var(--accent);text-shadow:0 0 8px rgba(0,229,255,.5);}
 
-  /* PAGE NAV bubble — only shows when extras exist */
-  .page-nav{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--card);border-radius:10px;border:1px solid var(--border);}
-  .page-nav-info{flex:1;text-align:center;font-size:.6rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);}
-  .nav-btn{flex:1;padding:8px 0;font-family:'Bebas Neue',sans-serif;font-size:.85rem;letter-spacing:2px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;text-align:center;transition:all .15s;}
-  .nav-btn.active{border-color:var(--accent);color:var(--accent);}
-  .nav-btn.disabled{opacity:.3;cursor:not-allowed;}
-
-  /* CONFIRM */
-  .confirm-btn{width:100%;padding:16px;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:3px;border-radius:12px;border:none;background:var(--accent);color:#000;cursor:pointer;transition:all .2s;flex-shrink:0;}
+  /* FIXED CONFIRM FOOTER */
+  .confirm-footer{padding:10px 14px 16px;flex-shrink:0;background:var(--bg);}
+  .confirm-btn{width:100%;padding:16px;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:3px;border-radius:12px;border:none;background:var(--accent);color:#000;cursor:pointer;transition:all .2s;}
   .confirm-btn:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;}
   .confirm-btn:not(:disabled):active{transform:scale(.98);}
 
@@ -118,7 +106,6 @@
     </div>
   </div>
 
-  <!-- Single toggle: expand → compress, same button -->
   <div class="h-win-btn" id="win-btn" onclick="toggleFullscreen()">
     <svg id="win-icon" viewBox="0 0 24 24">
       <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
@@ -127,7 +114,7 @@
   </div>
 </header>
 
-<div class="main">
+<div class="scroll-area">
 
   <div class="scan-card">
     <div class="scan-ready" id="scan-ready" onclick="toggleScan()">
@@ -154,17 +141,12 @@
         </div>
       </div>
     </div>
-
-    <div class="scan-footer">
-      <div class="scan-status" id="scan-status">Tap to scan a barcode</div>
-    </div>
   </div>
 
   <div class="results-card" id="results-card">
     <div class="results-grid" id="results-grid">
 
       <div class="field-row" id="row-gtin">
-        <div class="field-ai">GTIN</div>
         <div class="field-info">
           <div class="field-label">GTIN / Product</div>
           <div class="field-value empty" id="val-gtin">—</div>
@@ -172,7 +154,6 @@
       </div>
 
       <div class="field-row" id="row-date">
-        <div class="field-ai">Pack Date</div>
         <div class="field-info">
           <div class="field-label">Pack Date</div>
           <div class="field-value empty" id="val-date">—</div>
@@ -180,7 +161,6 @@
       </div>
 
       <div class="field-row" id="row-weight">
-        <div class="field-ai">Weight</div>
         <div class="field-info">
           <div class="field-label">Weight (lbs)</div>
           <div class="field-value empty" id="val-weight">—</div>
@@ -188,7 +168,6 @@
       </div>
 
       <div class="field-row" id="row-serial">
-        <div class="field-ai">Serial</div>
         <div class="field-info">
           <div class="field-label">Serial Number</div>
           <div class="field-value empty" id="val-serial">—</div>
@@ -196,41 +175,35 @@
       </div>
 
       <div class="field-row" id="row-inspect">
-        <div class="field-ai">Inspect ID</div>
         <div class="field-info">
           <div class="field-label">Inspection ID</div>
           <div class="field-value" id="val-inspect" style="cursor:pointer;" onclick="editInspect()">P-47016</div>
         </div>
-        <div style="font-size:.6rem;color:var(--muted);padding-left:4px;cursor:pointer;" onclick="editInspect()">✏</div>
+        <div style="font-size:.65rem;color:var(--muted);cursor:pointer;padding-left:4px;" onclick="editInspect()">✏</div>
       </div>
 
-      <!-- Extra field pages — injected by JS -->
-      <div id="extra-page-fields"></div>
-
-      <!-- Page nav — only shown when extras exist -->
-      <div class="page-nav" id="page-nav" style="display:none;">
-        <div class="nav-btn" id="nav-back" onclick="navPage(-1)">◀ BACK</div>
-        <div class="page-nav-info" id="nav-info">PAGE 1</div>
-        <div class="nav-btn" id="nav-next" onclick="navPage(1)">NEXT ▶</div>
-      </div>
+      <!-- Extra GS1 fields appended here -->
+      <div id="extra-fields"></div>
 
     </div>
   </div>
 
-  <button class="confirm-btn" id="confirm-btn" onclick="confirmScan()" disabled>CONFIRM</button>
+</div><!-- /scroll-area -->
 
+<!-- Confirm always visible at bottom -->
+<div class="confirm-footer">
+  <button class="confirm-btn" id="confirm-btn" onclick="confirmScan()" disabled>CONFIRM</button>
 </div>
 
 <div class="flash" id="flash"></div>
 
 <script>
 let scanning = false, codeReader = null, scanData = null, animFrame = null;
-let extraPages = [], currentPage = 0; // page 0 = primary fields (no extra shown)
 
 /* ===== GS1 CATALOGUE ===== */
 const GS1_AI = {
   '00':  {badge:'SSCC',      name:'Serial Shipping Container', len:18, fixed:true},
-  '01':  {badge:'GTIN',      name:'GTIN',                      len:14, fixed:true},
+  '01':  {badge:'GTIN',      name:'GTIN / Product',            len:14, fixed:true},
   '02':  {badge:'Content',   name:'GTIN of Contents',          len:14, fixed:true},
   '10':  {badge:'Lot',       name:'Batch / Lot Number',        len:20, fixed:false},
   '11':  {badge:'Prod Date', name:'Production Date',           len:6,  fixed:true, fmt:'date'},
@@ -262,7 +235,6 @@ const GS1_AI = {
   '92':  {badge:'Cust 92',   name:'Company Internal (92)',      len:30, fixed:false},
 };
 const PRIMARY_AIS = new Set(['01','13','3202','21']);
-const EXTRAS_PER_PAGE = 4;
 
 /* ===== PARSER ===== */
 function parseGS1(raw) {
@@ -296,8 +268,8 @@ function parseGS1(raw) {
 /* ===== FORMATTERS ===== */
 function formatDate(s) {
   if (!s || s.length !== 6) return s;
-  const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return `${mo[parseInt(s.substr(2,2),10)-1]||s.substr(2,2)} ${s.substr(4,2)}, 20${s.substr(0,2)}`;
+  const mm = s.substr(2,2), dd = s.substr(4,2), yy = s.substr(0,2);
+  return `${mm}/${dd}/20${yy}`;
 }
 function formatW2(s) { return s ? (parseInt(s,10)/100).toFixed(2)+' lbs' : s; }
 function applyFmt(v, fmt) {
@@ -322,13 +294,13 @@ function displayData(parsed, raw) {
         wt   = parsed['3202']||'', ser = parsed['21']||'';
   const pid = extractPID(gtin);
 
-  // Header Product ID — always clear first
+  // Header Product ID
   const pidDisp = document.getElementById('pid-display');
   const pidVal  = document.getElementById('pid-value');
   pidDisp.style.display = 'none'; pidVal.textContent = '';
   if (pid) { pidVal.textContent = pid; pidDisp.style.display = 'flex'; }
 
-  // GTIN with highlighted PID digits
+  // GTIN
   const gtinEl = document.getElementById('val-gtin');
   if (gtin) {
     gtinEl.innerHTML = gtinHTML(gtin);
@@ -343,14 +315,8 @@ function displayData(parsed, raw) {
   setField('val-weight', 'row-weight', wt,   formatW2);
   setField('val-serial', 'row-serial', ser);
 
-  // Build extra pages
-  const extraAIs = Object.keys(parsed).filter(ai => !PRIMARY_AIS.has(ai));
-  extraPages = [];
-  for (let i = 0; i < extraAIs.length; i += EXTRAS_PER_PAGE) {
-    extraPages.push(extraAIs.slice(i, i + EXTRAS_PER_PAGE));
-  }
-  currentPage = 0;
-  renderExtraPage();
+  // Extra GS1 fields
+  renderExtras(parsed);
 
   document.getElementById('results-card').classList.add('has-data');
   document.getElementById('confirm-btn').disabled = !(gtin && date);
@@ -367,79 +333,39 @@ function setField(id, rowId, val, fmt) {
   }
 }
 
-function renderExtraPage() {
-  const box = document.getElementById('extra-page-fields');
-  const nav = document.getElementById('page-nav');
+function renderExtras(parsed) {
+  const box = document.getElementById('extra-fields');
   box.innerHTML = '';
-
-  if (!extraPages.length) { nav.style.display = 'none'; return; }
-
-  // Show nav
-  nav.style.display = 'flex';
-  const page = extraPages[currentPage];
-  page.forEach(ai => {
+  const extras = Object.keys(parsed).filter(ai => !PRIMARY_AIS.has(ai));
+  extras.forEach(ai => {
     const def  = GS1_AI[ai];
-    const badge = def ? def.badge : `AI ${ai}`;
-    const name  = def ? def.name  : `GS1 AI (${ai})`;
-    const dval  = def ? applyFmt(scanData.parsed[ai], def.fmt) : scanData.parsed[ai];
-    const row   = document.createElement('div');
+    const name = def ? def.name : `GS1 AI (${ai})`;
+    const dval = def ? applyFmt(parsed[ai], def.fmt) : parsed[ai];
+    const row  = document.createElement('div');
     row.className = 'field-row filled';
-    row.innerHTML = `<div class="field-ai">${badge}</div><div class="field-info"><div class="field-label">${name}</div><div class="field-value">${dval}</div></div>`;
+    row.innerHTML = `<div class="field-info"><div class="field-label">${name}</div><div class="field-value">${dval}</div></div>`;
     box.appendChild(row);
   });
-
-  // Update nav state
-  const totalPages = extraPages.length + 1; // page 0 = main, 1+ = extras
-  const displayPage = currentPage + 1;      // for display purposes on extra pages
-  document.getElementById('nav-info').textContent = `PAGE ${currentPage + 2} OF ${totalPages}`;
-
-  const backBtn = document.getElementById('nav-back');
-  const nextBtn = document.getElementById('nav-next');
-  backBtn.className = 'nav-btn' + (currentPage === 0 ? ' disabled' : ' active');
-  nextBtn.className = 'nav-btn' + (currentPage >= extraPages.length - 1 ? ' disabled' : ' active');
 }
 
-function navPage(dir) {
-  const newPage = currentPage + dir;
-  if (newPage < 0 || newPage >= extraPages.length) return;
-  currentPage = newPage;
-  renderExtraPage();
-}
-
-/* ===== SCAN REGION CROP (object-fit:cover aware) ===== */
+/* ===== CROP (object-fit:cover aware) ===== */
 function getCropCanvas() {
   const vp  = document.getElementById('scan-viewport');
   const vid = document.getElementById('video');
   const cvs = document.getElementById('crop-canvas');
-
   const cW = vp.clientWidth, cH = vp.clientHeight;
   const vW = vid.videoWidth,  vH = vid.videoHeight;
   if (!vW || !vH) return vid;
-
-  // object-fit: cover scale & offset
-  const cAR = cW / cH, vAR = vW / vH;
-  let scale, offX = 0, offY = 0;
-  if (vAR > cAR) {
-    // video wider → fit height, crop sides
-    scale = vH / cH;
-    offX = (vW - cW * scale) / 2;
-  } else {
-    // video taller → fit width, crop top/bottom
-    scale = vW / cW;
-    offY = (vH - cH * scale) / 2;
-  }
-
-  // aim-frame in container coords: 92% wide, 72% tall, centered
-  const fCW = cW * 0.92, fCH = cH * 0.72;
-  const fCX = (cW - fCW) / 2, fCY = (cH - fCH) / 2;
-
-  // Map to video pixel coords
-  const fVX = fCX * scale + offX, fVY = fCY * scale + offY;
-  const fVW = fCW * scale,        fVH = fCH * scale;
-
-  cvs.width  = Math.round(fVW) || 1;
-  cvs.height = Math.round(fVH) || 1;
-  cvs.getContext('2d').drawImage(vid, fVX, fVY, fVW, fVH, 0, 0, cvs.width, cvs.height);
+  const cAR = cW/cH, vAR = vW/vH;
+  let scale, offX=0, offY=0;
+  if (vAR > cAR) { scale=vH/cH; offX=(vW-cW*scale)/2; }
+  else            { scale=vW/cW; offY=(vH-cH*scale)/2; }
+  const fCW=cW*0.92, fCH=cH*0.72;
+  const fCX=(cW-fCW)/2, fCY=(cH-fCH)/2;
+  const fVX=fCX*scale+offX, fVY=fCY*scale+offY;
+  const fVW=fCW*scale,      fVH=fCH*scale;
+  cvs.width=Math.round(fVW)||1; cvs.height=Math.round(fVH)||1;
+  cvs.getContext('2d').drawImage(vid,fVX,fVY,fVW,fVH,0,0,cvs.width,cvs.height);
   return cvs;
 }
 
@@ -453,18 +379,17 @@ function showViewport() {
   document.getElementById('scan-viewport').style.display = 'block';
 }
 function toggleScan() {
-  scanning ? (stopScan(), showReady(), setStatus('Tap to scan a barcode','')) : startScan();
+  scanning ? (stopScan(), showReady()) : startScan();
 }
 
 async function startScan() {
-  setStatus('Starting camera…',''); showViewport(); scanning = true;
+  showViewport(); scanning = true;
   try {
     const vid = document.getElementById('video');
     const stream = await navigator.mediaDevices.getUserMedia({
       video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}}
     });
     vid.srcObject = stream; await vid.play();
-    setStatus('Aim at barcode…','active');
     if ('BarcodeDetector' in window) {
       const det = new BarcodeDetector({formats:['code_128','ean_13','ean_8','upc_a','upc_e','itf','pdf417']});
       const loop = async () => {
@@ -476,7 +401,6 @@ async function startScan() {
             if (Object.keys(parsed).length) {
               stopScan(); showReady();
               displayData(parsed, bc[0].rawValue);
-              setStatus('✓ Scanned — tap to scan again','success');
               return;
             }
           }
@@ -485,7 +409,6 @@ async function startScan() {
       };
       animFrame = requestAnimationFrame(loop);
     } else {
-      setStatus('Loading decoder…','active');
       const s = document.createElement('script');
       s.src = 'https://unpkg.com/@zxing/library@0.19.1/umd/index.min.js';
       s.onload = () => {
@@ -499,15 +422,13 @@ async function startScan() {
             if (Object.keys(parsed).length) {
               stopScan(); showReady();
               displayData(parsed, res.getText());
-              setStatus('✓ Scanned — tap to scan again','success');
             }
           }
         });
-        setStatus('Aim at barcode…','active');
       };
       document.head.appendChild(s);
     }
-  } catch(e) { stopScan(); showReady(); setStatus('Camera error — check permissions','error'); }
+  } catch(e) { stopScan(); showReady(); }
 }
 
 function stopScan() {
@@ -518,26 +439,20 @@ function stopScan() {
   if (vid && vid.srcObject) { vid.srcObject.getTracks().forEach(t=>t.stop()); vid.srcObject=null; }
 }
 
-function setStatus(t,c) {
-  const el = document.getElementById('scan-status');
-  el.textContent = t; el.className = 'scan-status'+(c?' '+c:'');
-}
-
 /* ===== CLEAR ===== */
 function clearScan() {
-  stopScan(); scanData = null; extraPages = []; currentPage = 0;
+  stopScan(); scanData = null;
   document.getElementById('pid-display').style.display = 'none';
   document.getElementById('pid-value').textContent = '';
   ['val-gtin','val-date','val-weight','val-serial'].forEach(id => {
-    const el = document.getElementById(id); el.textContent = '—'; el.classList.add('empty');
+    const el = document.getElementById(id); el.textContent='—'; el.classList.add('empty');
   });
   ['row-gtin','row-date','row-weight','row-serial'].forEach(id =>
     document.getElementById(id).classList.remove('filled'));
-  document.getElementById('extra-page-fields').innerHTML = '';
-  document.getElementById('page-nav').style.display = 'none';
+  document.getElementById('extra-fields').innerHTML = '';
   document.getElementById('results-card').classList.remove('has-data');
   document.getElementById('confirm-btn').disabled = true;
-  showReady(); setStatus('Tap to scan a barcode','');
+  showReady();
 }
 
 /* ===== INSPECT ===== */
@@ -575,7 +490,7 @@ function flashScreen() {
   f.classList.add('on'); setTimeout(()=>f.classList.remove('on'), 200);
 }
 
-/* ===== FULLSCREEN TOGGLE ===== */
+/* ===== FULLSCREEN ===== */
 function toggleFullscreen() {
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen().catch(()=>{});

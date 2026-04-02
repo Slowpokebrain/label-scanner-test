@@ -22,16 +22,16 @@
 
   /* HEADER */
   header{background:var(--surface);border-bottom:2px solid var(--border);padding:8px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:8px;}
-  .h-refresh{width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1.5px solid var(--border);border-radius:50%;cursor:pointer;flex-shrink:0;}
-  .h-refresh:active{border-color:var(--accent);}
-  .h-refresh svg{width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
+  .h-refresh{width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1.5px solid var(--accent);border-radius:50%;cursor:pointer;flex-shrink:0;box-shadow:0 0 6px rgba(0,229,255,.2);}
+  .h-refresh:active{border-color:var(--accent-h);}
+  .h-refresh svg{width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
   #pid-display{flex:1;justify-content:center;display:none;}
   .pid-box{background:var(--card);border:1.5px solid rgba(0,229,255,.45);border-radius:10px;padding:5px 16px;text-align:center;box-shadow:0 0 14px rgba(0,229,255,.15);}
-  .pid-label{font-size:.48rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:1px;}
-  .pid-val{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:5px;color:var(--accent);text-shadow:0 0 12px rgba(0,229,255,.5);line-height:1;}
-  .h-win-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;flex-shrink:0;}
-  .h-win-btn:active{border-color:var(--accent);}
-  .h-win-btn svg{width:15px;height:15px;stroke:var(--muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .pid-label{font-size:.48rem;text-transform:uppercase;letter-spacing:1.5px;color:#ffb74d;margin-bottom:1px;}
+  .pid-val{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:5px;color:#ffb74d;text-shadow:0 0 12px rgba(255,183,77,.5);line-height:1;}
+  .h-win-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1.5px solid var(--accent);border-radius:8px;cursor:pointer;flex-shrink:0;box-shadow:0 0 6px rgba(0,229,255,.2);}
+  .h-win-btn:active{border-color:var(--accent-h);}
+  .h-win-btn svg{width:15px;height:15px;stroke:var(--accent);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 
   /* SCROLL AREA */
   .scroll-area{flex:1;overflow-y:auto;padding:12px 14px 12px;display:flex;flex-direction:column;gap:12px;}
@@ -79,10 +79,10 @@
   /* Value = Inter, white */
   .field-value{font-family:'Inter',sans-serif;font-weight:600;font-size:.95rem;color:#fff;line-height:1.3;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .field-value.empty{color:var(--border);font-weight:400;font-size:.82rem;}
-  .gtin-pid{color:var(--accent);text-shadow:0 0 8px rgba(0,229,255,.5);}
+  .gtin-pid{color:#ffb74d;text-shadow:0 0 8px rgba(255,183,77,.5);}
 
   /* FIXED CONFIRM FOOTER */
-  .confirm-footer{padding:10px 14px max(16px, env(safe-area-inset-bottom));flex-shrink:0;background:var(--bg);}
+  .confirm-footer{padding:8px 14px 10px;flex-shrink:0;background:var(--bg);}
   .confirm-btn{width:100%;padding:16px;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:3px;border-radius:12px;border:none;background:var(--accent);color:#000;cursor:pointer;transition:all .2s;}
   .confirm-btn:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;}
   .confirm-btn:not(:disabled):active{transform:scale(.98);}
@@ -145,6 +145,14 @@
 
   <div class="results-card" id="results-card">
     <div class="results-grid" id="results-grid">
+
+      <div class="field-row" id="row-from">
+        <div class="field-info">
+          <div class="field-label">From</div>
+          <div class="field-value" id="val-from" onclick="editFrom()" style="cursor:pointer;">The Best Dressed Chicken</div>
+        </div>
+        <div style="font-size:.65rem;color:var(--muted);cursor:pointer;padding-left:4px;flex-shrink:0;" onclick="editFrom()">✏</div>
+      </div>
 
       <div class="field-row" id="row-gtin">
         <div class="field-info">
@@ -455,6 +463,13 @@ function clearScan() {
   document.getElementById('results-card').classList.remove('has-data');
   document.getElementById('confirm-btn').disabled = true;
   showReady();
+}
+
+/* ===== FROM ===== */
+function editFrom() {
+  const cur = document.getElementById('val-from').textContent.trim();
+  const v = prompt('From:', cur);
+  if (v !== null && v.trim()) document.getElementById('val-from').textContent = v.trim();
 }
 
 /* ===== INSPECT ===== */

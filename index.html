@@ -24,7 +24,6 @@
   header{background:var(--surface);border-bottom:2px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:relative;}
   .hbrand{display:flex;flex-direction:column;line-height:1;}
   .hbrand h1{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:3px;color:var(--accent);}
-  .hbrand span{font-size:.55rem;color:var(--muted);letter-spacing:.5px;font-family:'DM Sans',sans-serif;margin-top:1px;}
   .hmenu{width:36px;height:36px;display:flex;flex-direction:column;justify-content:center;gap:5px;padding:6px;background:var(--card);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;}
   .hmenu div{width:18px;height:2px;background:var(--accent);border-radius:2px;}
 
@@ -33,10 +32,9 @@
 
   /* SCANNER CARD */
   .scan-card{background:var(--surface);border:2px solid var(--border);border-radius:14px;overflow:hidden;}
-  .scan-label{font-family:'Bebas Neue',sans-serif;font-size:.75rem;letter-spacing:2px;color:var(--muted);padding:10px 14px 8px;border-bottom:1px solid var(--border);}
 
   /* READY STATE */
-  .scan-ready{background:var(--card);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:32px 20px;user-select:none;transition:background .15s;}
+  .scan-ready{background:var(--card);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:32px 20px;user-select:none;transition:background .15s;min-height:60vw;}
   .scan-ready:active{background:#1e2235;}
   .scan-ready-icon{position:relative;width:110px;height:70px;}
   /* Corner brackets */
@@ -50,10 +48,9 @@
   .sri-bar{flex:1;background:rgba(0,229,255,.5);border-radius:1px;}
   .sri-wide{flex:2;}
   .scan-ready-label{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:3px;color:var(--accent);text-shadow:0 0 12px rgba(0,229,255,.4);}
-  .scan-ready-sub{font-size:.6rem;color:var(--muted);letter-spacing:1px;}
 
   /* ACTIVE VIEWPORT */
-  .scan-viewport{position:relative;width:100%;background:#000;overflow:hidden;}
+  .scan-viewport{position:relative;width:100%;background:#000;overflow:hidden;min-height:60vw;}
   .scan-viewport video{width:100%;height:100%;object-fit:cover;display:block;}
   #video{width:100%;display:block;}
   .scan-overlay{position:absolute;inset:0;pointer-events:none;}
@@ -69,8 +66,8 @@
   @keyframes aim-pulse{0%,100%{border-color:var(--accent);box-shadow:0 0 0 1200px rgba(0,0,0,.45),0 0 12px rgba(0,229,255,.3);}50%{border-color:var(--accent-h);box-shadow:0 0 0 1200px rgba(0,0,0,.45),0 0 22px rgba(0,229,255,.6);}}
   @keyframes scan-line{0%{top:20%;opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{top:80%;opacity:0;}}
 
-  .scan-footer{padding:8px 14px 10px;text-align:center;}
-  .scan-status{font-size:.68rem;color:var(--muted);letter-spacing:.5px;}
+  .scan-footer{padding:6px 14px 8px;text-align:center;}
+  .scan-status{font-size:.65rem;color:var(--muted);letter-spacing:.5px;}
   .scan-status.active{color:var(--accent);}
   .scan-status.success{color:var(--green);}
   .scan-status.error{color:var(--red);}
@@ -101,10 +98,6 @@
   .confirm-btn:not(:disabled):active{transform:scale(.98);}
 
   /* RAW DATA (collapsed) */
-  .raw-toggle{font-size:.62rem;color:var(--muted);letter-spacing:.5px;padding:6px 14px;cursor:pointer;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-  .raw-toggle span{font-family:'Bebas Neue',sans-serif;font-size:.62rem;letter-spacing:1px;}
-  .raw-body{display:none;padding:8px 14px 10px;word-break:break-all;font-size:.6rem;color:var(--muted);font-family:monospace;border-top:1px solid var(--border);}
-  .raw-body.open{display:block;}
 
   /* MENU MODAL */
   .mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:100;align-items:flex-end;justify-content:center;}
@@ -129,7 +122,6 @@
 <header>
   <div class="hbrand">
     <h1>Box Scanner</h1>
-    <span>Poultry Processing</span>
   </div>
   <div id="pid-display" style="position:absolute;left:50%;transform:translateX(-50%);text-align:center;display:none;">
     <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:4px;color:var(--accent);text-shadow:0 0 12px rgba(0,229,255,.5);line-height:1;" id="pid-value"></div>
@@ -144,7 +136,6 @@
 
   <!-- SCANNER -->
   <div class="scan-card" id="scan-card">
-    <div class="scan-label">Camera</div>
 
     <!-- READY STATE: tap to scan -->
     <div class="scan-ready" id="scan-ready" onclick="startScan()">
@@ -161,7 +152,7 @@
           <div class="sri-bar sri-wide"></div>
         </div>
       </div>
-      <div class="scan-ready-label">TAP TO SCAN</div>
+      <div class="scan-ready-label">TAP TO SCAN BARCODE</div>
       
     </div>
 
@@ -231,11 +222,6 @@
         <div style="font-family:'DM Sans',sans-serif;font-size:.6rem;color:var(--muted);padding-left:4px;cursor:pointer;" onclick="editInspect()">✏</div>
       </div>
     </div>
-    <div class="raw-toggle" onclick="toggleRaw()">
-      <span id="raw-lbl">RAW DATA</span>
-      <span id="raw-arrow">▼</span>
-    </div>
-    <div class="raw-body" id="raw-body"></div>
   </div>
 
   <!-- CONFIRM -->
@@ -266,13 +252,11 @@
   </div>
 </div>
 
-<script src="https://unpkg.com/@zxing/library@0.18.6/umd/index.min.js"></script>
 <script>
 /* ==================== STATE ==================== */
 let scanning = false;
 let codeReader = null;
 let scanData = null;
-let rawOpen = false;
 
 /* ==================== BARCODE PARSER ==================== */
 function parseGS1(raw) {
@@ -368,8 +352,6 @@ function displayData(parsed, raw) {
   setField('val-serial', 'row-serial', ser);
 
   // Raw data
-  const rawBody = document.getElementById('raw-body');
-  rawBody.textContent = raw;
 
   // Card state
   document.getElementById('results-card').classList.add('has-data');
@@ -397,53 +379,80 @@ function cancelScan() {
   setStatus('Tap to scan a barcode', '');
 }
 
+let animFrame = null;
+
 async function startScan() {
   setStatus('Starting camera…', '');
   showViewport();
   scanning = true;
 
   try {
-    const ZXing = window.ZXing;
-
-    // Pass hints to constructor — Code 128 priority + try harder
-    const hints = new Map();
-    hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, [
-      ZXing.BarcodeFormat.CODE_128,
-      ZXing.BarcodeFormat.EAN_13,
-      ZXing.BarcodeFormat.EAN_8,
-    ]);
-    hints.set(ZXing.DecodeHintType.TRY_HARDER, true);
-
-    codeReader = new ZXing.BrowserMultiFormatReader(hints, 300);
-
     const videoEl = document.getElementById('video');
 
-    // decodeFromConstraints manages the stream internally — no manual getUserMedia
-    codeReader.decodeFromConstraints(
-      {
-        video: {
-          facingMode: { ideal: 'environment' },
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
-        }
-      },
-      videoEl,
-      (result, err) => {
-        if (result && scanning) {
-          const raw = result.getText();
-          const parsed = parseGS1(raw);
-          if (parsed.ai01 || parsed.ai13 || parsed.ai3202 || parsed.ai21) {
-            stopScan();
-            showReady();
-            displayData(parsed, raw);
-            setStatus('✓ Scanned — tap to scan again', 'success');
-          }
-        }
-        // err fires on every frame that has no barcode — that's normal, ignore it
+    // Start back camera stream
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: { ideal: 'environment' },
+        width: { ideal: 1920 },
+        height: { ideal: 1080 }
       }
-    );
+    });
+    videoEl.srcObject = stream;
+    await videoEl.play();
 
     setStatus('Aim at barcode…', 'active');
+
+    // Use native BarcodeDetector if available (Android Chrome) — best for Code 128
+    if ('BarcodeDetector' in window) {
+      const detector = new BarcodeDetector({
+        formats: ['code_128', 'ean_13', 'ean_8', 'upc_a', 'upc_e', 'itf', 'pdf417']
+      });
+      const loop = async () => {
+        if (!scanning) return;
+        try {
+          const barcodes = await detector.detect(videoEl);
+          if (barcodes.length > 0) {
+            const raw = barcodes[0].rawValue;
+            const parsed = parseGS1(raw);
+            if (parsed.ai01 || parsed.ai13 || parsed.ai3202 || parsed.ai21) {
+              stopScan();
+              showReady();
+              displayData(parsed, raw);
+              setStatus('✓ Scanned — tap to scan again', 'success');
+              return;
+            }
+          }
+        } catch(e) {}
+        animFrame = requestAnimationFrame(loop);
+      };
+      animFrame = requestAnimationFrame(loop);
+    } else {
+      // Fallback: ZXing via dynamic import
+      setStatus('Loading decoder…', 'active');
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/@zxing/library@0.19.1/umd/index.min.js';
+      script.onload = () => {
+        const ZXing = window.ZXing;
+        const hints = new Map();
+        hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, [ZXing.BarcodeFormat.CODE_128, ZXing.BarcodeFormat.EAN_13]);
+        hints.set(ZXing.DecodeHintType.TRY_HARDER, true);
+        codeReader = new ZXing.BrowserMultiFormatReader(hints, 250);
+        codeReader.decodeFromStream(videoEl.srcObject, videoEl, (result, err) => {
+          if (result && scanning) {
+            const raw = result.getText();
+            const parsed = parseGS1(raw);
+            if (parsed.ai01 || parsed.ai13 || parsed.ai3202 || parsed.ai21) {
+              stopScan();
+              showReady();
+              displayData(parsed, raw);
+              setStatus('✓ Scanned — tap to scan again', 'success');
+            }
+          }
+        });
+        setStatus('Aim at barcode…', 'active');
+      };
+      document.head.appendChild(script);
+    }
 
   } catch (e) {
     stopScan();
@@ -454,11 +463,11 @@ async function startScan() {
 
 function stopScan() {
   scanning = false;
+  if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
   if (codeReader) {
     try { codeReader.reset(); } catch(e) {}
     codeReader = null;
   }
-  // Always kill any lingering video tracks
   const videoEl = document.getElementById('video');
   if (videoEl && videoEl.srcObject) {
     videoEl.srcObject.getTracks().forEach(t => t.stop());
@@ -488,7 +497,6 @@ function clearScan() {
   });
   document.getElementById('results-card').classList.remove('has-data');
   document.getElementById('results-badge').classList.remove('show');
-  document.getElementById('raw-body').textContent = '';
   showReady();
   setStatus('Tap to scan a barcode', '');
   document.getElementById('confirm-btn').disabled = true;
@@ -496,11 +504,6 @@ function clearScan() {
 }
 
 /* ==================== RAW TOGGLE ==================== */
-function toggleRaw() {
-  rawOpen = !rawOpen;
-  document.getElementById('raw-body').classList.toggle('open', rawOpen);
-  document.getElementById('raw-arrow').textContent = rawOpen ? '▲' : '▼';
-}
 
 /* ==================== INSPECT ==================== */
 function editInspect() {

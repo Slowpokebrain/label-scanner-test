@@ -24,18 +24,15 @@
   /* HEADER */
   header{background:var(--surface);border-bottom:2px solid var(--border);padding:8px 12px;
          display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:8px;}
-  .h-refresh{width:34px;height:34px;display:flex;align-items:center;justify-content:center;
-             background:var(--card);border:1.5px solid var(--accent);border-radius:50%;
-             cursor:pointer;flex-shrink:0;box-shadow:0 0 6px rgba(0,229,255,.25);}
-  .h-refresh:active{opacity:.7;}
-  .h-refresh svg{width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:2.2;
-                 stroke-linecap:round;stroke-linejoin:round;}
-  .h-win-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;
-             background:var(--card);border:1.5px solid var(--accent);border-radius:8px;
-             cursor:pointer;flex-shrink:0;box-shadow:0 0 6px rgba(0,229,255,.25);}
-  .h-win-btn:active{opacity:.7;}
-  .h-win-btn svg{width:15px;height:15px;stroke:var(--accent);fill:none;stroke-width:2;
-                 stroke-linecap:round;stroke-linejoin:round;}
+  .h-brand{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:4px;
+           color:var(--accent);text-shadow:0 0 10px rgba(0,229,255,.4);white-space:nowrap;}
+  .h-controls{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+  .h-text-btn{height:34px;display:flex;align-items:center;justify-content:center;
+              background:var(--card);border:1.5px solid var(--accent);border-radius:8px;
+              cursor:pointer;flex-shrink:0;box-shadow:0 0 6px rgba(0,229,255,.2);
+              font-family:'Bebas Neue',sans-serif;font-size:.75rem;letter-spacing:1.5px;
+              color:var(--accent);padding:0 10px;white-space:nowrap;}
+  .h-text-btn:active{opacity:.7;}
 
   /* CONTENT AREA */
   .bottom-area{flex:1;display:flex;flex-direction:column;gap:12px;min-height:0;overflow:hidden;}
@@ -122,14 +119,10 @@
 <body>
 
 <header>
-  <div class="h-refresh" onclick="clearScan()">
-    <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4"/></svg>
-  </div>
-  <div class="h-win-btn" onclick="toggleFullscreen()">
-    <svg id="win-icon" viewBox="0 0 24 24">
-      <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
-      <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
-    </svg>
+  <div class="h-brand">Pure Scan</div>
+  <div class="h-controls">
+    <div class="h-text-btn" onclick="clearScan()">CLEAR</div>
+    <div class="h-text-btn" id="fs-btn" onclick="toggleFullscreen()">FULL SCREEN: OFF</div>
   </div>
 </header>
 
@@ -480,11 +473,8 @@ fixHeight();
 window.addEventListener('resize', fixHeight);
 document.addEventListener('fullscreenchange', () => {
   setTimeout(fixHeight, 50);
-  const ico = document.getElementById('win-icon');
-  if (!ico) return;
-  ico.innerHTML = document.fullscreenElement
-    ? `<polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/>`
-    : `<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>`;
+  const btn = document.getElementById('fs-btn');
+  if (btn) btn.textContent = document.fullscreenElement ? 'FULL SCREEN: ON' : 'FULL SCREEN: OFF';
 });
 </script>
 </body>
